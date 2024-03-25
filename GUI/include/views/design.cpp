@@ -3,11 +3,11 @@
 #include "design.h"
 
 Design::Design() {
-    this->vwidgets = QList<VWidget*>();
+    this->vwidgets = QList<Element*>();
 }
 
 Design::~Design() {
-    for (VWidget* item : vwidgets) {
+    for (Element* item : vwidgets) {
         delete item;
     }
 }

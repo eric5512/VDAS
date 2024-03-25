@@ -14,34 +14,17 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>1</number>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QWidget" name="tabProgram">
-       <attribute name="title">
-        <string>Program</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5"/>
-      </widget>
-      <widget class="QWidget" name="tabDesign">
-       <attribute name="title">
-        <string>Design</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_3"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QGraphicsView" name="graphicsDesignView"/>
-          </item>
-         </layout>
-        </item>
-       </layout>
+      <widget class="QTextEdit" name="program"/>
+      <widget class="QTextEdit" name="output">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
      </widget>
     </item>
@@ -61,10 +44,11 @@
      <string>File</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionNew_proyect"/>
-    <addaction name="actionOpen_proyect"/>
+    <addaction name="actionNewProyect"/>
+    <addaction name="actionOpenProyect"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
+    <addaction name="actionComplile"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -76,7 +60,7 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOpen_proyect">
+  <action name="actionOpenProyect">
    <property name="text">
     <string>Open project</string>
    </property>
@@ -86,14 +70,19 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionNew_proyect">
+  <action name="actionNewProyect">
    <property name="text">
     <string>New project</string>
    </property>
   </action>
   <action name="actionHelp">
    <property name="text">
-    <string>Help</string>
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionComplile">
+   <property name="text">
+    <string>Complile</string>
    </property>
   </action>
  </widget>

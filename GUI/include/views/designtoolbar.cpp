@@ -1,6 +1,5 @@
 #include "designtoolbar.h"
 
-DesignToolBar::DesignToolBar()
-{
+DesignToolBar::DesignToolBar() {
 
 }

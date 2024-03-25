@@ -3,10 +3,7 @@
 #include <QApplication>
 #include <QStyleFactory>
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-
+void setStyle(QApplication &a) {
     a.setStyle(QStyleFactory::create("Fusion"));
 
     QPalette darkPalette;
@@ -29,7 +26,15 @@ int main(int argc, char *argv[])
 
     a.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 
+}
+
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
+
+    setStyle(a);
+
     MainWindow w;
+    w.setWindowTitle("VDAS");
     w.show();
     return a.exec();
 }

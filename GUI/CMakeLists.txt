@@ -19,14 +19,10 @@ set(PROJECT_SOURCES
         src/mainwindow.cpp
         src/mainwindow.h
         src/mainwindow.ui
-        include/vwidgets/vwidget.h
-        include/vwidgets/vwidget.cpp
-        include/views/design.h
-        include/views/design.cpp
-        include/views/designtoolbar.h
-        include/views/designtoolbar.cpp
-        include/views/designtoolbutton.h
-        include/views/designtoolbutton.cpp
+        include/program/vprogram.h
+        include/program/vprogram.cpp
+        include/app/vapp.h
+        include/app/vapp.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
