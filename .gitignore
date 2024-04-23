@@ -33,3 +33,4 @@
 
 #QT
 build-*
+GUI/CMakeLists.txt.user

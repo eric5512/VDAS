@@ -1,0 +1,7 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "AD5445YRUZ")(type "KiCad")(uri "${KIPRJMOD}/../ul_AD5445YRUZ/KiCADv6/2024-04-10_18-59-46.kicad_sym")(options "")(descr ""))
+  (lib (name "AMC1303E2520DWV")(type "KiCad")(uri "${KIPRJMOD}/../ul_AMC1303E2520DWV/KiCADv6/2024-04-10_19-01-25.kicad_sym")(options "")(descr ""))
+  (lib (name "MAX11102AUB")(type "KiCad")(uri "${KIPRJMOD}/../ul_MAX11102AUB-/KiCADv6/2024-04-10_18-56-41.kicad_sym")(options "")(descr ""))
+  (lib (name "ADA4851")(type "KiCad")(uri "${KIPRJMOD}/../ul_ADA4851-4YRUZ/KiCADv6/2024-04-22_22-39-23.kicad_sym")(options "")(descr ""))
+)
