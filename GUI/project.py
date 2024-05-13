@@ -1,6 +1,5 @@
 from io import TextIOWrapper
 from typing import Self
-
 class Project:
     __resource: TextIOWrapper
 
@@ -8,7 +7,7 @@ class Project:
         self.__resource = None
 
     def close(self) -> None:
-        if self.is_empty():
+        if not self.is_empty():
             self.__resource.close()
 
     def get_text(self) -> str:
@@ -17,7 +16,7 @@ class Project:
         return text
     
     def is_empty(self) -> bool:
-        return self.__resource != None
+        return self.__resource == None
     
     def save(self, text: str) -> bool:
         if self.is_empty():
@@ -35,3 +34,8 @@ class Project:
         proj.__resource = res
         return proj
     
+    def new_project(path: str, name: str) -> Self:
+        proj = Project()
+        res = open(path + '\\' + name + '.vdas', '+x')
+        proj.__resource = res
+        return proj

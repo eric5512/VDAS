@@ -32,7 +32,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="linePath">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -45,7 +45,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="buttonSelectFolder">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -58,7 +58,7 @@
     <string>Select folder</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="lineName">
    <property name="geometry">
     <rect>
      <x>100</x>

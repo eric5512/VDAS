@@ -12,7 +12,6 @@ class LoadWindow(QDialog):
 
         self.ui.buttonSelectFile.clicked.connect(self.__click_selectFile)
 
-
     def __click_selectFile(self):
         self.__path, _ = QFileDialog.getOpenFileName(self)
         self.ui.linePath.setText(self.__path)

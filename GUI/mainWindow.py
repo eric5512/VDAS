@@ -1,15 +1,18 @@
 import sys
 
-from PySide6.QtGui import QCloseEvent
+from PySide6.QtGui import QCloseEvent, QShortcut, QKeySequence
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from ui_window import Ui_MainWindow
 
 from loadProject import LoadWindow
+from newProject import NewWindow
 
 from project import Project
 
 class MainWindow(QMainWindow):
+    project: Project
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -17,8 +20,17 @@ class MainWindow(QMainWindow):
 
         self.project = Project()
 
-        self.ui.actionOpenProyect.triggered.connect(self.__click_actionOpen)
+        self.open_shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
+        self.open_shortcut.activated.connect(self.__click_actionOpen)
+        self.ui.actionOpen.triggered.connect(self.__click_actionOpen)
+
+        self.save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.save_shortcut.activated.connect(self.__click_actionSave)
         self.ui.actionSave.triggered.connect(self.__click_actionSave)
+
+        self.new_shortcut = QShortcut(QKeySequence("Ctrl+N"), self)
+        self.new_shortcut.activated.connect(self.__click_actionNew)
+        self.ui.actionNew.triggered.connect(self.__click_actionNew)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.project.close()
@@ -31,6 +43,15 @@ class MainWindow(QMainWindow):
         if load_window.exec():
             if (path := load_window.get_path()) != None:
                 self.project = Project.load_project(path)
+                self.ui.program.setText(self.project.get_text())
+
+    def __click_actionNew(self) -> None:
+        new_window = NewWindow()
+        new_window.setModal(True)
+        new_window.setFixedSize(new_window.size())
+        if new_window.exec():
+            if (path := new_window.get_path()) != None:
+                self.project = Project.new_project(path, new_window.get_name())
                 self.ui.program.setText(self.project.get_text())
 
     def __click_actionSave(self) -> None:
