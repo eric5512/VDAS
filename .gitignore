@@ -35,3 +35,7 @@
 build-*
 GUI/CMakeLists.txt.user
 *.pyc
+/FW/incremental_db
+/FW/db
+/FW/db
+/FW/output_files
