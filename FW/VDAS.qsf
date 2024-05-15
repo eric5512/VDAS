@@ -60,10 +60,17 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_FILE tb_parallel.v
 set_global_assignment -name VERILOG_FILE queue.v
 set_global_assignment -name VERILOG_FILE VDAS.v
 set_global_assignment -name VERILOG_FILE parallel.v
 set_global_assignment -name VERILOG_FILE onewire.v
 set_global_assignment -name VERILOG_FILE control.v
-set_global_assignment -name VECTOR_WAVEFORM_FILE parallel.vwf
+set_global_assignment -name EDA_RUN_TOOL_AUTOMATICALLY OFF -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH tb_parallel -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_NAME tb_parallel -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_parallel
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_parallel -section_id tb_parallel
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_parallel.v -section_id tb_parallel
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
