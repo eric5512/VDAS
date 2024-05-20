@@ -1,5 +1,0 @@
-module onewire(in, out);
-
-
-
-endmodule

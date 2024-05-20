@@ -40,3 +40,8 @@ GUI/CMakeLists.txt.user
 /FW/db
 /FW/output_files
 /FW/simulation
+*.bak
+*.vcd
+/Lang/_build
+*.cmi
+/FW/.qsys_edit
