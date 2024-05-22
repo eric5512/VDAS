@@ -45,3 +45,5 @@ GUI/CMakeLists.txt.user
 /Lang/_build
 *.cmi
 /FW/.qsys_edit
+Lang/ls
+Lang/compiler

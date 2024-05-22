@@ -18,14 +18,14 @@ and token = parse
     { token lexbuf }
 | '\n'
     { EOL }
-| "def"
-    { KEY }
+| "define"
+    { DEF }
 | ['0'-'9']+ '.'? ['0'-'9']* as f
     { NUM (float_of_string f) }
 | ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* as s 
     { ID s }
 | "->"
-    { ARROW }
+    { ARR }
 | '+'
     { ADD }
 | '-'
