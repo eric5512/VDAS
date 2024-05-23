@@ -22,7 +22,8 @@ class Project:
         if self.is_empty():
             return False
     
-        self.__resource.truncate()
+        self.__resource.seek(0)
+        self.__resource.truncate(0)
         self.__resource.write(text)
         self.__resource.flush()
 

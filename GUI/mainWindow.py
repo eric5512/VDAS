@@ -3,7 +3,7 @@ import sys
 from PySide6.QtGui import QCloseEvent, QShortcut, QKeySequence
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
-from ui_window import Ui_MainWindow
+from windows.ui_window import Ui_MainWindow
 
 from loadProject import LoadWindow
 from newProject import NewWindow
@@ -32,6 +32,10 @@ class MainWindow(QMainWindow):
         self.new_shortcut.activated.connect(self.__click_actionNew)
         self.ui.actionNew.triggered.connect(self.__click_actionNew)
 
+        self.compile_shortcut = QShortcut(QKeySequence("Ctrl+G"), self)
+        self.compile_shortcut.activated.connect(self.__click_actionCompile)
+        self.ui.actionComplile.triggered.connect(self.__click_actionCompile)
+
     def closeEvent(self, event: QCloseEvent) -> None:
         self.project.close()
         return super().closeEvent(event)
@@ -44,6 +48,9 @@ class MainWindow(QMainWindow):
             if (path := load_window.get_path()) != None:
                 self.project = Project.load_project(path)
                 self.ui.program.setText(self.project.get_text())
+
+    def __click_actionCompile(self) -> None:
+        pass
 
     def __click_actionNew(self) -> None:
         new_window = NewWindow()

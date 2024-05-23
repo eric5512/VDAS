@@ -1,1 +1,9 @@
-Sample text
+define vout 5
+
+ADC0 read()
+
+CurrentADC0 read_curr()
+
+NumericDisplay disp
+
+(vout - read) * read_curr -> disp

@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 672, 26))
+        self.menubar.setGeometry(QRect(0, 0, 672, 21))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuHelp = QMenu(self.menubar)
@@ -81,12 +81,12 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.actionOpen.setText(QCoreApplication.translate("MainWindow", u"Open project", None))
-        self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save", None))
-        self.actionNew.setText(QCoreApplication.translate("MainWindow", u"New project", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"VDAS", None))
+        self.actionOpen.setText(QCoreApplication.translate("MainWindow", u"Open project (Ctrl+O)", None))
+        self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save (Ctrl+S)", None))
+        self.actionNew.setText(QCoreApplication.translate("MainWindow", u"New project (Ctrl+N)", None))
         self.actionHelp.setText(QCoreApplication.translate("MainWindow", u"Documentation", None))
-        self.actionComplile.setText(QCoreApplication.translate("MainWindow", u"Complile", None))
+        self.actionComplile.setText(QCoreApplication.translate("MainWindow", u"Complile (Ctrl+G)", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
     # retranslateUi

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QDialog, QFileDialog
 
-from ui_load import Ui_Dialog
+from windows.ui_load import Ui_Dialog
 
 class LoadWindow(QDialog):
     __path: str = None

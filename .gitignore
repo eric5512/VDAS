@@ -47,3 +47,4 @@ GUI/CMakeLists.txt.user
 /FW/.qsys_edit
 Lang/ls
 Lang/compiler
+*.zip
