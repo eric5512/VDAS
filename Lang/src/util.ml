@@ -1,8 +1,10 @@
+type program_t = AST.ins_t list;;
+
 let process (line : string): AST.ins_t =
   let linebuf = Lexing.from_string line in
   Parser.main Lexer.token linebuf;;
 
-let process (lines : string list): AST.ins_t list =
+let process (lines : string list): program_t =
   List.map process lines;;
 
 let rec get_lines (channel : Lexing.lexbuf): string list =

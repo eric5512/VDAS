@@ -9,17 +9,14 @@ class Program(uiclass, baseclass):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.plots = [a for _, a in self.__dict__.items() if type(a) == pg.PlotWidget]
-        self.displays_num = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit]
-        self.inputs_num = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QDoubleSpinBox]
-        self.buttons = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton]
-        self.displays_bool = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLCDNumber]
-        self.all = self.plots + self.displays_num + self.inputs_num + self.buttons + self.displays_bool
+        self.inputs = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton or type(a) == PySide6.QtWidgets.QDoubleSpinBox]
+        self.outputs = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget]
+        self.all = self.inputs + self.outputs
         print(self.plots)
 
 
 
 app = QApplication(sys.argv)
-window = Program()
-window.show()
+program = Program()
+program.show()
 app.exec()
