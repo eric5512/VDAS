@@ -4,7 +4,8 @@ open AST
 
 %token <float> NUM
 %token <string> ID
-%token ARR COL
+%token <string> STR
+%token ARR COL EQ
 %token LPAR RPAR COMMA
 %token EOL
 
@@ -14,7 +15,7 @@ open AST
 
 %left ADD SUB
 %left MUL DIV
-%left POW
+%right POW
 
 %start <ins_t> main
 
@@ -29,12 +30,14 @@ instruction:
     { Def (n, v)}
 | e = expr ARR c = component
     { Link (e, c)}
-| t = ID n = ID LPAR args = separated_list(COMMA, ID) RPAR
-    { Init (t, n, args) }
+| t = ID n = ID LPAR argsl = separated_list(COMMA, args) RPAR
+    { Init (t, n, argsl) }
+
+args:
+| n = ID EQ v = STR
+    { (n, v) }
 
 expr:
-| LPAR e = expr RPAR
-    { e }
 | v = NUM
     { Const v }
 | c = component
@@ -49,8 +52,8 @@ component:
     { (Right (n, a))}
 
 operation:
-| LPAR e = operation RPAR
-    { e }
+| LPAR o = operation RPAR
+    { o }
 | e1 = expr ADD e2 = expr
     { Op (Add, e1, e2) }
 | e1 = expr SUB e2 = expr

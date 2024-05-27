@@ -2,7 +2,7 @@
 
 MENHIR          := menhir
 
-MENHIRFLAGS     := --infer
+MENHIRFLAGS     := --infer --explain
 
 OCAMLBUILD      := ocamlbuild -pkg unix -I src -use-ocamlfind -use-menhir -menhir "$(MENHIR) $(MENHIRFLAGS)"
 

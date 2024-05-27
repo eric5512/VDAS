@@ -1,9 +1,5 @@
-define vout 5
+define var 5
 
-ADC0 read()
+NumInput ni(label="Example label")
 
-CurrentADC0 read_curr()
-
-NumericDisplay disp
-
-(vout - read) * read_curr -> disp
+Plot p(label="Example plot")

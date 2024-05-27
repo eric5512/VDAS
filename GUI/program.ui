@@ -7,187 +7,78 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>601</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Program</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="PlotWidget" name="graphWidget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>280</width>
-      <height>210</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>171</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Example graph</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="doubleSpinBox">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>40</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>20</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Example text</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>40</y>
-      <width>91</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="text">
-     <string>3.4</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>20</y>
-      <width>91</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Example display</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>120</y>
-      <width>101</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Example button</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-    <property name="checked">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="lcdNumber">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>130</y>
-      <width>91</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>110</y>
-      <width>91</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Example display</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>26</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
- </widget>
- <customwidgets>
+  <widget class="QWidget" name="centralwidget"><widget class="QDoubleSpinBox" name="ni">
+<property name="geometry">
+ <rect>
+  <x>390</x>
+  <y>40</y>
+  <width>100</width>
+  <height>30</height>
+ </rect>
+</property><property name="font">
+<font>
+ <pointsize>12</pointsize>
+</font>
+</property><property name="binding" stdset="0">
+<string>test</string>
+</property>
+</widget><widget class="PlotWidget" name="p">
+<property name="geometry">
+ <rect>
+  <x>40</x>
+  <y>40</y>
+  <width>330</width>
+  <height>280</height>
+ </rect>
+</property><property name="binding" stdset="0">
+<string>test</string>
+</property>
+</widget><widget class="QLabel" name="label_2">
+<property name="geometry">
+ <rect>
+  <x>390</x>
+  <y>20</y>
+  <width>170</width>
+  <height>20</height>
+ </rect>
+</property><property name="font">
+<font>
+ <pointsize>10</pointsize>
+</font>
+</property><property name="text">
+<string>Example label</string>
+</property>
+</widget><widget class="QLabel" name="label_1">
+<property name="geometry">
+ <rect>
+  <x>40</x>
+  <y>20</y>
+  <width>170</width>
+  <height>20</height>
+ </rect>
+</property><property name="font">
+<font>
+ <pointsize>10</pointsize>
+</font>
+</property><property name="text">
+<string>Example plot</string>
+</property>
+</widget></widget>
+</widget>
+<customwidgets>
   <customwidget>
-   <class>PlotWidget</class>
-   <extends>QWidget</extends>
-   <header>pyqtgraph</header>
-   <container>1</container>
+    <class>PlotWidget</class>
+    <extends>QWidget</extends>
+    <header>pyqtgraph</header>
+    <container>1</container>
   </customwidget>
- </customwidgets>
- <resources/>
- <connections/>
+</customwidgets>
+<resources/>
+<connections/>
 </ui>

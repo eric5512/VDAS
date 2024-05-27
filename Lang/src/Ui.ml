@@ -18,6 +18,7 @@ let header: string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
   <widget class=\"QWidget\" name=\"centralwidget\">";;
 
 let footer: string = "</widget>
+</widget>
 <customwidgets>
   <customwidget>
     <class>PlotWidget</class>
@@ -30,19 +31,23 @@ let footer: string = "</widget>
 <connections/>
 </ui>";;
 
-let property_read_only: string = "<property name=\"readOnly\">
-<bool>true</bool>
-</property>";;
+let property_string (name: string) (obj: string): string = Printf.sprintf ("<property name=\"%s\" stdset=\"0\">
+<string>%s</string>
+</property>") name obj;;
 
-let property_checkable: string = "<property name=\"checkable\">
-<bool>true</bool>
-</property>";;
+let property_bool (name: string) (obj: bool): string = Printf.sprintf ("<property name=\"%s\">
+<bool>%b</bool>
+</property>") name obj;;
 
 let property_text_size (size: int): string = Printf.sprintf ("<property name=\"font\">
 <font>
  <pointsize>%d</pointsize>
 </font>
 </property>") size;;
+
+let property_text (text: string): string = Printf.sprintf ("<property name=\"text\">
+<string>%s</string>
+</property>") text;;
 
 let property_geometry ((h, w): size_t) (x: int) (y: int): string = Printf.sprintf ("<property name=\"geometry\">
  <rect>
@@ -59,7 +64,7 @@ let widget (clss: string) (name: string) (properties: string list): string = let
 
 let size_label: size_t = (20, 170);;
 
-let size_plot: size_t = (210, 80);;
+let size_plot: size_t = (280, 330);;
 
 let size_numin: size_t = (30, 100);;
 
@@ -67,18 +72,18 @@ let size_numout: size_t = (30, 100);;
 
 let size_button: size_t = (40, 100);;
 
-let size_lcd: size_t = (30, 90)
+let size_lcd: size_t = (30, 90);;
 
-let widget_label (num: int) (text: string) (x: int) (y: int): string = widget "QLabel" ("label_" ^ (string_of_int num)) [property_geometry size_label x y; property_text_size 10];;
+let widget_label (num: int) (text: string) (x: int) (y: int): string = widget "QLabel" ("label_" ^ (string_of_int num)) [property_geometry size_label x y; property_text_size 10; property_text text];;
 
-let widget_plot (name: string) (x: int) (y: int): string = widget "PlotWidget" name [property_geometry size_plot x y];;
+let widget_plot (name: string) (x: int) (y: int) (obj: string): string = widget "PlotWidget" name [property_geometry size_plot x y; property_string "binding" obj];;
 
-let widget_numin (name: string) (x: int) (y: int): string = widget "QDoubleSpinBox" name [property_geometry size_numin x y; property_text_size 12];;
+let widget_numin (name: string) (x: int) (y: int) (obj: string): string = widget "QDoubleSpinBox" name [property_geometry size_numin x y; property_text_size 12; property_string "binding" obj];;
 
-let widget_numout (name: string) (x: int) (y: int): string = widget "QLineEdit" name [property_geometry size_numout x y; property_text_size 12; property_read_only];;
+let widget_numout (name: string) (x: int) (y: int) (obj: string): string = widget "QLineEdit" name [property_geometry size_numout x y; property_text_size 12; property_bool "readOnly" true; property_string "binding" obj];;
 
-let widget_button (name: string) (x: int) (y: int): string = widget "QPushButton" name [property_geometry size_button x y; property_text_size 12; property_checkable];;
+let widget_button (name: string) (x: int) (y: int) (obj: string): string = widget "QPushButton" name [property_geometry size_button x y; property_text_size 12; property_bool "checkable" true; property_string "binding" obj];;
 
-let widget_lcd (name: string) (x: int) (y: int): string = widget "QLCDNumber" name [property_geometry size_lcd x y];;
+let widget_lcd (name: string) (x: int) (y: int) (obj: string): string = widget "QLCDNumber" name [property_geometry size_lcd x y; property_string "binding" obj];;
 
 let ui (widgets: string list): string = let jwidgets = List.fold_left (^) "" widgets in header ^ jwidgets ^ footer;;

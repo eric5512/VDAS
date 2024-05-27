@@ -12,7 +12,6 @@ class Program(uiclass, baseclass):
         self.inputs = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton or type(a) == PySide6.QtWidgets.QDoubleSpinBox]
         self.outputs = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget]
         self.all = self.inputs + self.outputs
-        print(self.plots)
 
 
 
