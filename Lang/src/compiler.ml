@@ -36,6 +36,6 @@ let generate_ui (path: string) (ast: Util.program_t): unit = let file = open_out
   let labels, widgets = get_widgets ast in
   Printf.fprintf file "%s\n" ((List.append (bind_widgets ast widgets) labels) |> Ui.ui);;
 
-let () = let ast = get_AST "/mnt/c/Users/Eric/Desktop/Programas/GitHub/VDAS/GUI/Test/test.vdas" |> process in
+let () = let ast = get_AST "/mnt/c/Users/Eric/Desktop/Programas/GitHub/VDAS/GUI/Test/test.vdas" |> Util.process_AST in
   let (labels, widgets) = get_widgets ast in
   Printf.fprintf stdout "%s\n" ((List.append (bind_widgets ast widgets) labels) |> Ui.ui);;

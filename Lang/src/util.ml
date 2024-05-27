@@ -20,7 +20,7 @@ let process (lines : string list): (program_t * string list) =
   | _ -> (ins, List.rev errs) in
   aux [] [] 1 lines;;
 
-let process (ast: program_t): program_t =
+let process_AST (ast: program_t): program_t =
   let sub_constants (ast: program_t): program_t = 
     let hashtbl_const (ast: program_t): (string, float) Hashtbl.t = 
       let table = Hashtbl.create 10 in

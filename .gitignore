@@ -48,3 +48,4 @@ GUI/CMakeLists.txt.user
 Lang/ls
 Lang/compiler
 *.zip
+*.native
