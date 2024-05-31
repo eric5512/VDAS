@@ -15,7 +15,7 @@ module AWG #(
 
     reg [3:0] cnt = 4'b0000;
     reg [PTBITS-1:0] raddr = {PTBITS{1'b0}};
-	 reg [PTBITS-1:0] waddr;
+	reg [PTBITS-1:0] waddr;
     reg [NBITS-1:0] buff[SIZE];
 	 
 	 

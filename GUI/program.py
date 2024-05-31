@@ -13,7 +13,8 @@ class Program(uiclass, baseclass):
         self.outputs = [a for _, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget]
         self.all = self.inputs + self.outputs
 
-
+    def get_binding(widget):
+        return widget.property("binding")
 
 app = QApplication(sys.argv)
 program = Program()

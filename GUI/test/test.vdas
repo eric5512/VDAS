@@ -3,3 +3,5 @@ define var 5
 NumInput ni(label="Example label")
 
 Plot p(label="Example plot")
+
+var * ni -> p

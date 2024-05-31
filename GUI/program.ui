@@ -28,7 +28,8 @@
 </property><property name="binding" stdset="0">
 <string>test</string>
 </property>
-</widget><widget class="PlotWidget" name="p">
+</widget>
+<widget class="PlotWidget" name="p">
 <property name="geometry">
  <rect>
   <x>40</x>

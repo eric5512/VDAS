@@ -56,25 +56,30 @@ let rec find_args_def (args: (string * string) list) (arg: string) (default: str
   | (name, value)::t -> if name = arg then value else find_args_def t arg default
   | [] -> default;;
 
+let string_of_component (comp: AST.comp_t): string = match comp with
+  | Left l -> l
+  | Right (n, v) -> Printf.sprintf "%s:%s" n v;;
+  
+let rec string_of_expression (expr: AST.expr_t): string = 
+  let bop_to_str (bop: AST.bop_t): string =
+    match bop with
+      | Add -> "+"
+      | Sub -> "-"
+      | Mul -> "*"
+      | Div -> "/"
+      | Pow -> "^" in
+  match expr with 
+    | Op (bop, ex1, ex2) -> "(" ^ string_of_expression ex1 ^ bop_to_str bop ^ string_of_expression ex2 ^ ")"
+    | Comp c -> string_of_component c 
+    | Const f -> string_of_float f;;
+
 let print_instruction (instruction: AST.ins_t): unit = 
   let print_component (component: AST.comp_t): unit =
-    match component with
-      | Left l -> print_string l
-      | Right (n, v) -> Printf.printf "%s:%s" n v in
+    string_of_component component |> print_string in
   let rec print_expression (expression: AST.expr_t): unit = 
-    let bop_to_str (bop: AST.bop_t): string =
-      match bop with
-        | Add -> "+"
-        | Sub -> "-"
-        | Mul -> "*"
-        | Div -> "/"
-        | Pow -> "^" in
-    match expression with 
-      | Op (bop, ex1, ex2) -> print_expression ex1; bop_to_str bop |> print_string; print_expression ex2
-      | Comp c -> print_component c 
-      | Const f -> print_float f
-    in
+    string_of_expression expression |> print_string in
   match instruction with
     | Init (ty, name, args) -> let argss = List.fold_left (fun s1 (n, v) -> n ^ "=" ^ "\"" ^ v ^ "\"" ^ "," ^ s1) "" args in Printf.printf "Init (%s, %s, %s)\n" ty name argss
     | Def (n,v) -> Printf.printf "Def (%s, %f)\n" n v
     | Link (e, c) -> print_expression e; print_string " -> "; print_component c; print_char '\n';;
+  

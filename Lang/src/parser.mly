@@ -49,7 +49,7 @@ component:
 | n = ID
     { (Left n) }
 | n = ID COL a = ID
-    { (Right (n, a))}
+    { failwith "Properties not implemented yet"; (Right (n, a)) }
 
 operation:
 | LPAR o = operation RPAR

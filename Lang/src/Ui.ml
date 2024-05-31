@@ -62,6 +62,7 @@ let widget (clss: string) (name: string) (properties: string list): string = let
 %s
 </widget>") clss name jprops;;
 
+(* Widget sizes *)
 let size_label: size_t = (20, 170);;
 
 let size_plot: size_t = (280, 330);;
@@ -74,16 +75,21 @@ let size_button: size_t = (40, 100);;
 
 let size_lcd: size_t = (30, 90);;
 
+let size_window: size_t = (600, 800);;
+
+(* Output widgets *)
 let widget_label (num: int) (text: string) (x: int) (y: int): string = widget "QLabel" ("label_" ^ (string_of_int num)) [property_geometry size_label x y; property_text_size 10; property_text text];;
 
-let widget_plot (name: string) (x: int) (y: int) (obj: string): string = widget "PlotWidget" name [property_geometry size_plot x y; property_string "binding" obj];;
+let widget_plot (name: string) (x: int) (y: int) (source: string): string = widget "PlotWidget" name [property_geometry size_plot x y; property_string "source" source];;
 
-let widget_numin (name: string) (x: int) (y: int) (obj: string): string = widget "QDoubleSpinBox" name [property_geometry size_numin x y; property_text_size 12; property_string "binding" obj];;
+let widget_numout (name: string) (x: int) (y: int) (source: string): string = widget "QLineEdit" name [property_geometry size_numout x y; property_text_size 12; property_bool "readOnly" true; property_string "source" source];;
 
-let widget_numout (name: string) (x: int) (y: int) (obj: string): string = widget "QLineEdit" name [property_geometry size_numout x y; property_text_size 12; property_bool "readOnly" true; property_string "binding" obj];;
+let widget_lcd (name: string) (x: int) (y: int) (source: string): string = widget "QLCDNumber" name [property_geometry size_lcd x y; property_string "source" source];;
 
-let widget_button (name: string) (x: int) (y: int) (obj: string): string = widget "QPushButton" name [property_geometry size_button x y; property_text_size 12; property_bool "checkable" true; property_string "binding" obj];;
+(* Input widgets *)
+let widget_numin (name: string) (x: int) (y: int): string = widget "QDoubleSpinBox" name [property_geometry size_numin x y; property_text_size 12];;
 
-let widget_lcd (name: string) (x: int) (y: int) (obj: string): string = widget "QLCDNumber" name [property_geometry size_lcd x y; property_string "binding" obj];;
+let widget_button (name: string) (x: int) (y: int): string = widget "QPushButton" name [property_geometry size_button x y; property_text_size 12; property_bool "checkable" true];;
 
+(* Aux function to join the widgets*)
 let ui (widgets: string list): string = let jwidgets = List.fold_left (^) "" widgets in header ^ jwidgets ^ footer;;
