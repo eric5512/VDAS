@@ -5,7 +5,7 @@ let get_AST (path: string): Util.program_t =
   if errs = [] then ins else failwith (List.hd errs);;
 
 let get_widgets (ast: Util.program_t): string list = 
-  let (win_h, win_w) = Ui.size_window in
+  (* let (win_h, win_w) = Ui.size_window in *)
   let pad = 20 in
   let x = ref pad in
   let y = ref (2*pad) in
@@ -19,7 +19,7 @@ let get_widgets (ast: Util.program_t): string list =
     | _ -> None in
   let find_source (name: string): string = 
     match List.find_opt (fun (x) -> match x with | AST.Link (_, Either.Left n) when n = name -> true | _ -> false) ast with
-      | Some (AST.Link (expr, _)) -> Util.string_of_expression expr
+      | Some (AST.Link (expr, _)) -> Interface.string_of_expression expr
       | _ -> raise (DataSource name) in 
   let rec traverse (elements: string list) = function
     | h::t -> (match h with
@@ -40,14 +40,55 @@ let get_widgets (ast: Util.program_t): string list =
     | [] -> elements in
   traverse [] ast;;
 
-let get_config (ast: Util.program_t): string = ;;
+let get_output_devices (ast: Util.program_t) (dev_dict: VASM.devices_t): string list = 
+  let rec traverse (elements: string list) = function
+    | h::t -> (match h with
+      | AST.Link (e, Either.Left s) -> (match Hashtbl.find_opt dev_dict s with
+        | Some d -> traverse ((Ui.property_string (VASM.dev_to_string d) (Interface.string_of_expression e))::elements) t
+        | None -> traverse elements t)
+      | _ -> traverse elements t)
+    | [] -> elements in
+  traverse [] ast;;
+
+let get_init_config (ast: Util.program_t) (dev_dict: VASM.devices_t): bytes = 
+  let dev_dict = VASM.dev_dict ast in
+  let rec traverse (elements: bytes list) = function
+    | h::t -> (match h with
+      | AST.Init (ty, name, args) -> (match VASM.dev_of_string_opt ty with
+        | Some dev -> traverse ((VASM.activate dev)::elements) t
+        | None -> traverse elements t)
+      | AST.Link (AST.Const f, Either.Left s) -> (match Hashtbl.find_opt dev_dict s with
+        | Some d -> 
+          if not (VASM.is_input d) then 
+            if VASM.is_digital d then 
+              traverse ((VASM.set_digital d (f <> 0.0))::elements) t 
+            else 
+              traverse ((VASM.set_analog d f)::elements) t 
+          else traverse elements t
+        | None -> traverse elements t)
+      | _ -> traverse elements t)
+    | [] -> elements in
+  let byte_list = traverse [] ast in
+  let header_byte = Bytes.create 1 in
+    Bytes.set_uint8 header_byte 0 0xAA;
+    List.fold_left Bytes.cat header_byte byte_list;;
 
 let generate_config (path: string) (ast: Util.program_t): unit = ();;
 
 let generate_ui (path: string) (ast: Util.program_t): unit = let file = open_out (path ^ "/program.ui") in
   let widgets = get_widgets ast in
-  Printf.fprintf file "%s\n" (Ui.ui widgets);;
+  Printf.fprintf file "%s\n" (Ui.ui widgets);
+  close_out file;;
+
+let generate_init_config (path: string) (ast: Util.program_t): unit = 
+  let put_bytes fn byts =
+    let outc = open_out_bin fn in
+    Bytes.iter (fun b -> output_char outc b) byts;
+    close_out outc in
+  put_bytes (path ^ "/program.init") (get_init_config ast (VASM.dev_dict ast));;
 
 let () = let ast = get_AST "/mnt/c/Users/Eric/Desktop/Programas/GitHub/VDAS/GUI/Test/test.vdas" |> Util.process_AST in
+  let dict = VASM.dev_dict ast in
   let widgets = get_widgets ast in
-  Printf.fprintf stdout "%s\n" (Ui.ui widgets);;
+  let devices = get_output_devices ast dict in
+  Printf.fprintf stdout "%s\n" (Ui.ui (List.rev_append widgets devices));;

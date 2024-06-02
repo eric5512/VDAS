@@ -1,7 +1,11 @@
 define var 5
 
-NumInput ni(label="Example label")
+NumInput ni(label="Example input")
 
 Plot p(label="Example plot")
 
-var * ni -> p
+DAC0 d0()
+
+var * (ni + 1) -> p
+
+ni -> d0
