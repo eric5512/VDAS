@@ -1,4 +1,5 @@
 exception DataSource of string;;
+exception InexistentType of string;;
 
 let get_AST (path: string): Util.program_t = 
   let (ins, errs) = Util.get_lines (open_in path |> Lexing.from_channel) |> Util.process in
@@ -16,7 +17,7 @@ let get_widgets (ast: Util.program_t): string list =
     | "BoolDisplay" -> Some (Ui.size_lcd, Either.Left Ui.widget_lcd)
     | "NumInput" -> Some (Ui.size_numin, Either.Right Ui.widget_numin)
     | "BoolInput" -> Some (Ui.size_button, Either.Right Ui.widget_button)
-    | _ -> None in
+    | s -> if VASM.dev_of_string_opt s |> Option.is_none then InexistentType s |> raise else None in
   let find_source (name: string): string = 
     match List.find_opt (fun (x) -> match x with | AST.Link (_, Either.Left n) when n = name -> true | _ -> false) ast with
       | Some (AST.Link (expr, _)) -> Interface.string_of_expression expr
@@ -44,7 +45,8 @@ let get_output_devices (ast: Util.program_t) (dev_dict: VASM.devices_t): string 
   let rec traverse (elements: string list) = function
     | h::t -> (match h with
       | AST.Link (e, Either.Left s) -> (match Hashtbl.find_opt dev_dict s with
-        | Some d -> traverse ((Ui.property_string (VASM.dev_to_string d) (Interface.string_of_expression e))::elements) t
+        | Some d ->
+          traverse ((Ui.property_string (VASM.dev_to_string d) (Interface.string_of_expression e |> (if VASM.is_digital d then VASM.set_digital_python else VASM.set_analog_python) d))::elements) t
         | None -> traverse elements t)
       | _ -> traverse elements t)
     | [] -> elements in
@@ -87,7 +89,7 @@ let generate_init_config (path: string) (ast: Util.program_t): unit =
     close_out outc in
   put_bytes (path ^ "/program.init") (get_init_config ast (VASM.dev_dict ast));;
 
-let () = let ast = get_AST "/mnt/c/Users/Eric/Desktop/Programas/GitHub/VDAS/GUI/Test/test.vdas" |> Util.process_AST in
+let () = let ast = get_AST "../GUI/Test/test.vdas" |> Util.process_AST in
   let dict = VASM.dev_dict ast in
   let widgets = get_widgets ast in
   let devices = get_output_devices ast dict in

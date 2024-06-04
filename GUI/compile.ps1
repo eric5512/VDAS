@@ -1,5 +1,7 @@
-pyside6-uic windows/mainWindow.ui -o windows/ui_window.py
-pyside6-uic windows/loadproject.ui -o windows/ui_load.py
-pyside6-uic windows/newproject.ui -o windows/ui_new.py
+$views = @("mainWindow", "loadproject", "newproject", "connect")
+
+for ($i = 0; $i -lt $views.Count; $i++) {
+    pyside6-uic windows/$($views[$i]).ui -o windows/ui_$($views[$i]).py
+}
 
 py -3.12 .\mainWindow.py

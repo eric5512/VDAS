@@ -2,10 +2,14 @@ define var 5
 
 NumInput ni(label="Example input")
 
-Plot p(label="Example plot")
+NumDisplay no(label="Example output")
+
+Plot p(label="Plot")
 
 DAC0 d0()
 
-var * (ni + 1) -> p
+var * (ni + 1) -> no
 
 ni -> d0
+
+ni -> p

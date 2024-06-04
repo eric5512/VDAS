@@ -75,7 +75,7 @@ let dev_dict (ast: Util.program_t): devices_t =
   let dict = Hashtbl.create 10 in
   List.iter (fun elem -> match elem with
     | AST.Init (ty, s, _) -> (match dev_of_string_opt ty with
-      | Some d -> Printf.printf "%s\n" s;Hashtbl.add dict s d
+      | Some d -> Hashtbl.add dict s d
       | None -> ())
     | _ -> ()) ast;
   dict;;
@@ -101,6 +101,19 @@ let activate (dev: device_t): bytes = (* 0b000DDDD0 *)
     | _ -> raise (DeviceError (dev, "activate"))) 0;
   ret;;
 
+let set_digital_python (dev: device_t) (value: string): string = 
+  let dev_str = match dev with
+    | DO0 -> "000"
+    | DO1 -> "001"
+    | DO2 -> "010"
+    | DO3 -> "011"
+    | DO4 -> "100"
+    | DO5 -> "101"
+    | DO6 -> "110"
+    | DO7 -> "111"
+    | _ -> raise (DeviceError (dev, "digital set")) in
+  Printf.sprintf "(0b001%s &lt;&lt; 2 + 0b1 if %s else 0b0 &lt;&lt; 1).to_bytes(1, 'big')" dev_str value;;
+
 let set_digital (dev: device_t) (value: bool): bytes = (* 0b001DDDV0 *)
   let set_digital_size = 1 in
   let ret = Bytes.create set_digital_size in
@@ -116,9 +129,16 @@ let set_digital (dev: device_t) (value: bool): bytes = (* 0b001DDDV0 *)
     | _ -> raise (DeviceError (dev, "digital set"))) lor (if value then 0b10 else 0b00) ) 0;
   ret;;
 
+let set_analog_python (dev: device_t) (value: string): string = 
+  let dev_str = match dev with
+    | DAC0 -> "0"
+    | DAC1 -> "1"
+    | _ -> raise (DeviceError (dev, "analog set")) in
+  Printf.sprintf "(0b010%s &lt;&lt; 12 + (int((%s+10)/20) &#38; 0b111111111111)).to_bytes(2, 'big')" dev_str value;;
+
 let set_analog (dev: device_t) (fvalue: float): bytes = (* 0b010DNNNN NNNNNNNN *)
   let set_analog_size = 2 in
-  let value = (fvalue /. voltage_fs +. 0.5) *. 4095. |> int_of_float in
+  let value = (fvalue /. voltage_fs +. 0.5) *. (float_of_int 0b111111111111) |> int_of_float in
   let hi_val = (value land 0b111100000000) lsr 7 in
   let lo_val = (value land 0b11111111) lsl 1 in
   let dev_val = (match dev with
