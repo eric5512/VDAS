@@ -9,10 +9,10 @@ class Program(uiclass, baseclass):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.inputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton or type(a) == PySide6.QtWidgets.QDoubleSpinBox}
-        self.outputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget}
-        self.bindings = { n:(Program.get_source(a)) for n, a in self.outputs.items()}
-        self.plot_data = { n:[] for n, a in self.outputs.items() if type(a) == pg.PlotWidget}
+        self.inputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton or type(a) == PySide6.QtWidgets.QDoubleSpinBox }
+        self.outputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget }
+        self.bindings = { n:(Program.get_source(a)) for n, a in self.outputs.items() }
+        self.plot_data = { n:[] for n, a in self.outputs.items() if type(a) == pg.PlotWidget }
         self.commands = [v for i in ["DAC0", "DAC1", "DO0", "DO1", "DO2", "DO3", "DO4", "DO5", "DO6", "DO7"] if (v := self.centralwidget.property(i)) != None]
         self.data = {
             "ADC0": 0,
@@ -28,6 +28,11 @@ class Program(uiclass, baseclass):
             "DI6": 0,
             "DI7": 0,
         }
+    
+    def send_commands(self):
+        for i in self.commands:
+            by = eval(i)
+            # send data
 
     def find(self, name):
         if name in self.data:
@@ -52,9 +57,14 @@ class Program(uiclass, baseclass):
             element.display(0 if eval(value) == 0 else 1)
 
         if type(element) == pg.PlotWidget:
-            self
+            self.plot_add_point(name, value)
 
-    def plot_add_point(self, value, name):
+    def plot_reset(self, name):
+        self.plot_data[name] = []
+        self.outputs[name].plot(self.plot_data[name])
+
+
+    def plot_add_point(self, name, value):
         self.plot_data[name].append(value)
         self.outputs[name].plot(self.plot_data[name])
 
