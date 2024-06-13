@@ -18,9 +18,9 @@ test-uart: test_bench/tb_uart.v uart_rx.v uart_tx.v
 	vvp tb
 	rm tb
 
-# test-onewire: test_bench/tb_onewire.v onewire.v
-# 	iverilog -g2005-sv -o tb test_bench/tb_onewire.v onewire.v
-# 	vvp tb
-# 	rm tb
+test-deltasigma: test_bench/tb_deltasigma.v deltasigma.v
+	iverilog -g2005-sv -o tb test_bench/tb_deltasigma.v deltasigma.v
+	vvp tb
+	rm tb
 
-test: test-parallel test-queue test-AWG test-uart
+test: test-parallel test-queue test-AWG test-uart test-deltasigma
