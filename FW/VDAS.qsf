@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE6E22C8
-set_global_assignment -name TOP_LEVEL_ENTITY AWG
+set_global_assignment -name TOP_LEVEL_ENTITY VDAS
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:38:59  MAY 13, 2024"
 set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.0 Lite Edition"
@@ -64,13 +64,16 @@ set_global_assignment -name EDA_TEST_BENCH_NAME tb_parallel -section_id eda_simu
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_parallel
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_parallel -section_id tb_parallel
 set_global_assignment -name EDA_TEST_BENCH_FILE tb_parallel.v -section_id tb_parallel
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE uart_tx.v
+set_global_assignment -name VERILOG_FILE uart_rx.v
+set_global_assignment -name VERILOG_FILE divider.v
+set_global_assignment -name VERILOG_FILE deltasigma.v
 set_global_assignment -name VERILOG_FILE AWG.v
 set_global_assignment -name VERILOG_FILE queue.v
 set_global_assignment -name VERILOG_FILE VDAS.v
 set_global_assignment -name VERILOG_FILE parallel.v
-set_global_assignment -name VERILOG_FILE onewire.v
 set_global_assignment -name VERILOG_FILE control.v
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

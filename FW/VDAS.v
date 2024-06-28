@@ -33,30 +33,29 @@ wire clk_adc1;
 wire clk_curr0;
 wire clk_curr1;
 
+wire [7:0] in_din;
 wire [7:0] out_din;
 wire pp_din;
-wire rst_n;
 wire em_din;
 
-wire [11:0] in_adc0;
 wire [11:0] out_adc0;
 wire pp_adc0;
 wire em_adc0;
 
-wire [11:0] in_adc1;
 wire [11:0] out_adc1;
 wire pp_adc1;
 wire em_adc1;
 
-wire [11:0] in_curr0;
 wire [11:0] out_curr0;
 wire pp_curr0;
 wire em_curr0;
 
-wire [11:0] in_curr1;
 wire [11:0] out_curr1;
 wire pp_curr1;
 wire em_curr1;
+
+wire [11:0] in_dac0;
+wire [11:0] in_dac1;
 
 control cont(
     .clk(clk),
@@ -65,52 +64,52 @@ control cont(
     .em_read(em_rx),
     .pp_read(pp_rx),
 
-    .out_write(out_tx),
+    .out_write(in_tx),
     .ld_write(ld_tx),
 
-    .in_adc0(in_adc0),
+    .in_adc0(out_adc0),
     .em_adc0(em_adc0),
     .pp_adc0(pp_adc0),
 
-    .in_adc1(in_adc1),
+    .in_adc1(out_adc1),
     .em_adc1(em_adc1),
     .pp_adc1(pp_adc1),
 
-    .in_cadc0(in_cadc0),
-    .em_cadc0(em_cadc0),
-    .pp_cadc0(pp_cadc0),
+    .in_cadc0(out_curr0),
+    .em_cadc0(em_curr0),
+    .pp_cadc0(pp_curr0),
 
-    .in_cadc1(in_cadc1),
-    .em_cadc1(em_cadc1),
-    .pp_cadc1(pp_cadc1),
+    .in_cadc1(out_curr1),
+    .em_cadc1(em_curr1),
+    .pp_cadc1(pp_curr1),
 
-    .in_din(in_din),
+    .in_din(out_din),
     .em_din(em_din),
     .pp_din(pp_din),
 
     .activemods(activemods), 
     .dout(dout),
-    .aout0(aout0),
-    .aout1(aout1),
+    .aout0(in_dac0),
+    .aout1(in_dac1),
     .pre(pre),
 
-    .rst_n(rst_n),
-    .rst_out(rst_out)
+    .rst_n(1'b1),
+    .rst_out(rst_n)
 );
 
 uart_rx rx (
     .i_Clock(clk),
     .i_Rx_Serial(ser_rx),
-    .o_Rx_DV(pp_rx),
+    .o_Rx_DV(ld_rx),
     .o_Rx_Byte(in_rx)
 );
 uart_tx tx (
     .i_Clock(clk),
     .i_Tx_DV(!em_tx),
-    .i_Tx_Byte(out_tx), 
-    .o_Tx_Active(1'b1),
+    .i_Tx_Byte(in_tx), 
+    .o_Tx_Active(),
     .o_Tx_Serial(ser_tx),
-    .o_Tx_Done(ld_tx)
+    .o_Tx_Done(pp_tx)
 );
 
 queue rx_queue (
@@ -159,10 +158,10 @@ divider adc1_clk (
     .clk_out(clk_adc1)
 );
 
-queue #(parameter PTBITS = 8,
-			 	NBITS = 12)
+queue #(.PTBITS(8),
+        .NBITS(12))
 adc0_queue  (
-    .in(in_adc0), 
+    .in(adc0), 
     .ck(clk_adc0), 
     .ld(activemods[3]), 
     .pp(pp_adc0), 
@@ -170,10 +169,10 @@ adc0_queue  (
     .em(em_adc0), 
     .out(out_adc0)
 );
-queue #(parameter PTBITS = 8,
-			 	NBITS = 12)
+queue #(.PTBITS(8),
+        .NBITS(12))
 adc1_queue (
-    .in(in_adc1), 
+    .in(adc1), 
     .ck(clk_adc1), 
     .ld(activemods[2]), 
     .pp(pp_adc1), 
@@ -208,10 +207,10 @@ deltasigma curr1_i (
     .out()
 );
 
-queue #(parameter PTBITS = 8,
-			 	NBITS = 12)
+queue #(.PTBITS(8),
+        .NBITS(12))
 curr0_queue (
-    .in(in_curr0), 
+    .in(curr0), 
     .ck(clk_curr0), 
     .ld(activemods[1]), 
     .pp(pp_curr0), 
@@ -219,10 +218,10 @@ curr0_queue (
     .em(em_curr0), 
     .out(out_curr0)
 );
-queue #(parameter PTBITS = 8,
-			 	NBITS = 12)
+queue #(.PTBITS(8),
+        .NBITS(12))
 curr1_queue (
-    .in(in_curr1), 
+    .in(curr1), 
     .ck(clk_curr1), 
     .ld(activemods[0]), 
     .pp(pp_curr1), 

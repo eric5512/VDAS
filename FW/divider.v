@@ -3,10 +3,10 @@ module divider (clk, pre, clk_out);
     input [9:0] pre;
     output clk_out;
 
-    reg [9:0] cnt = 6'd0;
+    reg [9:0] cnt = 10'd0;
 
     always @(posedge clk) begin
-        cnt <= cnt + 1;
+        cnt <= cnt + 1'b1;
         if (cnt >= pre - 1) begin
             cnt <= 10'd0;
         end

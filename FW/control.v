@@ -32,7 +32,7 @@ module control(
     output reg [7:0] dout,
     output reg [11:0] aout0,
     output reg [11:0] aout1,
-    output reg [9:0] pre,
+    output [9:0] pre,
     // RST signals
     input wire rst_n,
     output reg rst_out
@@ -68,14 +68,8 @@ reg [2:0] sending;
 assign pre = 10'b1111111111;
 
 // Change the state every clock cycle
-always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-        curr_state <= INIT_RV;
-        next_state <= INIT_RV;
-        substate_send <= 2'b00;
-    end else begin
-        curr_state <= next_state;
-    end
+always @(posedge clk) begin
+curr_state <= next_state;
 end
 
 // Coordinate the reception and emission of data
@@ -91,7 +85,7 @@ always @(posedge clk or negedge rst_n) begin
         ld_write <= 1'b0;
         out_write <= 8'b00000000;
         instruction <= 8'b0;
-        instr_size <= 2'b00;
+        instr_size <= 1'b0;
         substate_send <= 2'b00;
         data_buffer <= 12'b0;
     end else begin
@@ -127,7 +121,7 @@ always @(posedge clk or negedge rst_n) begin
             EXEC_RV: begin
                 rst_out <= 1'b1;
                 pp_read <= 1'b0;
-                instr_count <= 2'b00;
+                instr_count <= 1'b0;
 
                 // Prepare to read from the appropriate queue
                 case (instruction[15:13])

@@ -10,7 +10,7 @@ module deltasigma (rst_n, in, clk, dclk, out);
         if (!rst_n) begin
             cnt <= 21'd0;
         end else if (in) begin
-            cnt <= cnt + 1;
+            cnt <= cnt + 1'b1;
         end
     end
 
