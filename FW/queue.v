@@ -15,15 +15,15 @@ reg [PTBITS-1:0] write_pt = {PTBITS{1'b0}};
 assign em = (read_pt == write_pt);
 
 always @(posedge ck or negedge rst_n) begin
-    if (rst_n == 1'b0) begin
+    if (!rst_n) begin
         read_pt <= 0;
         write_pt <= 0;
     end else begin
-        if (ld == 1'b1) begin
+        if (ld) begin
             fifo[write_pt] <= in;
             write_pt <= write_pt + 1'b1;
         end
-        if (em == 1'b0 && pp == 1'b1) begin
+        if (!em && pp) begin
             out <= fifo[read_pt];
             read_pt <= read_pt + 1'b1;
         end

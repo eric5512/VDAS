@@ -5,6 +5,7 @@ module deltasigma (rst_n, in, clk, dclk, out);
     reg [20:0] buff, diff1, diff2, diff3;
     reg [20:0] int1, int2, sub1, sub2;
     reg [20:0] cnt;
+	 reg [20:0] aux;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -41,6 +42,7 @@ module deltasigma (rst_n, in, clk, dclk, out);
     always @(*) begin
         sub1 = buff - diff1;
         sub2 = sub1 - diff2;
-        out = (sub2 - diff3) >> 1;
+		  aux = (sub2 - diff3) >> 1;
+        out = aux[19:0];
     end
 endmodule

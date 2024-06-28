@@ -224,11 +224,13 @@ always @(posedge clk or negedge rst_n) begin
 end
 
 // Change to next state
-always @(posedge clk) begin
-    case (curr_state)
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        next_state = INIT_RV;
+    else case (curr_state)
         INIT_RV: next_state = RECV_RV;
         RECV_RV: if (instr_count == instr_size) next_state = EXEC_RV; else next_state = RECV_RV;
-        EXEC_RV: next_state = SEND_ZERO_RV;
+        EXEC_RV: next_state = COLLECT_RV;
         COLLECT_RV: if (sending != 3'b000) next_state = SEND_ZERO_RV; else next_state = RECV_RV;
         SEND_ZERO_RV: next_state = SEND_RV;
         SEND_RV: if (substate_send == 2'b00) next_state = RECV_RV; else next_state = SEND_RV;
