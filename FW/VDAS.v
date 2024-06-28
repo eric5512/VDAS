@@ -159,7 +159,9 @@ divider adc1_clk (
     .clk_out(clk_adc1)
 );
 
-queue adc0_queue (
+queue #(parameter PTBITS = 8,
+			 	NBITS = 12)
+adc0_queue  (
     .in(in_adc0), 
     .ck(clk_adc0), 
     .ld(activemods[3]), 
@@ -168,7 +170,9 @@ queue adc0_queue (
     .em(em_adc0), 
     .out(out_adc0)
 );
-queue adc1_queue (
+queue #(parameter PTBITS = 8,
+			 	NBITS = 12)
+adc1_queue (
     .in(in_adc1), 
     .ck(clk_adc1), 
     .ld(activemods[2]), 
@@ -204,7 +208,9 @@ deltasigma curr1_i (
     .out()
 );
 
-queue curr0_queue (
+queue #(parameter PTBITS = 8,
+			 	NBITS = 12)
+curr0_queue (
     .in(in_curr0), 
     .ck(clk_curr0), 
     .ld(activemods[1]), 
@@ -213,7 +219,9 @@ queue curr0_queue (
     .em(em_curr0), 
     .out(out_curr0)
 );
-queue curr1_queue (
+queue #(parameter PTBITS = 8,
+			 	NBITS = 12)
+curr1_queue (
     .in(in_curr1), 
     .ck(clk_curr1), 
     .ld(activemods[0]), 

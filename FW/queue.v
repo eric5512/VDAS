@@ -1,5 +1,5 @@
 module queue
-	#(parameter PTBITS = 6,
+	#(parameter PTBITS = 8,
 			 	NBITS = 8)
 	(in, ck, ld, pp, rst_n, em, out);
 

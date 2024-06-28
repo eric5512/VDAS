@@ -117,7 +117,7 @@ always @(posedge clk or negedge rst_n) begin
                         ACTIVATE_I: instr_size <= 1'd0;
                         SETDIGITAL_I: instr_size <= 1'd0;
                         SETANALOG_I: instr_size <= 1'd1;
-                        default: instr_size <= 1'd0; // Default case
+                        default: instr_size <= 1'd0;
                     endcase
                 end else begin
                     pp_read <= 1'b0;
