@@ -5,7 +5,7 @@ module AWG #(
     in, ld, addr, rst_n, pre, sel, out, ck
 );
     input ld, sel, ck, rst_n;
-    input [3:0] pre;
+    input [9:0] pre;
     input [PTBITS-1:0] addr;
     input [NBITS-1:0] in;
 
@@ -13,7 +13,7 @@ module AWG #(
 
     localparam SIZE = 2**NBITS;
 
-    reg [3:0] cnt = 4'b0000;
+    reg [9:0] cnt = 10'b0;
     reg [PTBITS-1:0] raddr = {PTBITS{1'b0}};
 	reg [PTBITS-1:0] waddr;
     reg [NBITS-1:0] buff[SIZE];
@@ -21,7 +21,7 @@ module AWG #(
 	 
     always @(posedge ck or negedge rst_n) begin
 			if (rst_n == 1'b0) begin
-				cnt = 4'b0000;
+				cnt = 10'b0;
 				raddr = {PTBITS{1'b0}};
 			end else begin
 			  if (sel == 1'b0)
@@ -30,7 +30,7 @@ module AWG #(
 					cnt = cnt + 1'b1;
 					if (cnt >= pre) begin
 						 raddr <= raddr + 1'b1;
-						 cnt <= 4'b0000;
+						 cnt <= 10'b00;
 					end
 					out <= buff[raddr];
 			  end

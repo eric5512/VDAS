@@ -2,6 +2,7 @@ import sys
 from PySide6.QtWidgets import QApplication
 import PySide6.QtWidgets
 import pyqtgraph as pg
+from serialInterface import SerialInterface
 
 uiclass, baseclass = pg.Qt.loadUiType("program.ui")
 

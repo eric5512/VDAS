@@ -23,4 +23,15 @@ test-deltasigma: test_bench/tb_deltasigma.v deltasigma.v
 	vvp tb
 	rm tb
 
-test: test-parallel test-queue test-AWG test-uart test-deltasigma
+test-divider: test_bench/tb_divider.v divider.v
+	iverilog -g2005-sv -o tb test_bench/tb_divider.v divider.v
+	vvp tb
+	rm tb
+
+test-control: test_bench/tb_control.v control.v
+	iverilog -g2005-sv -o tb test_bench/tb_control.v control.v
+	vvp tb
+	rm tb
+
+
+test: test-parallel test-queue test-AWG test-uart test-deltasigma test-control

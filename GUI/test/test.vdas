@@ -4,12 +4,15 @@ NumInput ni(label="Example input")
 
 NumDisplay no(label="Example output")
 
+NumDisplay no2(label="Test")
+
 Plot p(label="Plot")
 
 DAC0 d0()
 
+5 -> no2
+
 var * (ni + 1) -> no
 
-ni -> d0
 
 ni -> p

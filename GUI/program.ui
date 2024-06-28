@@ -39,7 +39,7 @@
 </property><property name="text">
 <string>Plot</string>
 </property>
-</widget><widget class="QLineEdit" name="no">
+</widget><widget class="QLineEdit" name="no2">
 <property name="geometry">
  <rect>
   <x>390</x>
@@ -54,7 +54,7 @@
 </property><property name="readOnly">
 <bool>true</bool>
 </property><property name="source" stdset="0">
-<string>(5.000000*(self.find("ni")+1.000000))</string>
+<string>5.000000</string>
 </property>
 </widget><widget class="QLabel" name="label_2">
 <property name="geometry">
@@ -69,9 +69,9 @@
  <pointsize>10</pointsize>
 </font>
 </property><property name="text">
-<string>Example output</string>
+<string>Test</string>
 </property>
-</widget><widget class="QDoubleSpinBox" name="ni">
+</widget><widget class="QLineEdit" name="no">
 <property name="geometry">
  <rect>
   <x>510</x>
@@ -83,11 +83,43 @@
 <font>
  <pointsize>12</pointsize>
 </font>
+</property><property name="readOnly">
+<bool>true</bool>
+</property><property name="source" stdset="0">
+<string>(5.000000*(self.find("ni")+1.000000))</string>
 </property>
 </widget><widget class="QLabel" name="label_3">
 <property name="geometry">
  <rect>
   <x>510</x>
+  <y>20</y>
+  <width>170</width>
+  <height>20</height>
+ </rect>
+</property><property name="font">
+<font>
+ <pointsize>10</pointsize>
+</font>
+</property><property name="text">
+<string>Example output</string>
+</property>
+</widget><widget class="QDoubleSpinBox" name="ni">
+<property name="geometry">
+ <rect>
+  <x>630</x>
+  <y>40</y>
+  <width>100</width>
+  <height>30</height>
+ </rect>
+</property><property name="font">
+<font>
+ <pointsize>12</pointsize>
+</font>
+</property>
+</widget><widget class="QLabel" name="label_4">
+<property name="geometry">
+ <rect>
+  <x>630</x>
   <y>20</y>
   <width>170</width>
   <height>20</height>
