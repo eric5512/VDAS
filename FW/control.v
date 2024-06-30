@@ -8,19 +8,19 @@ module control(
     output reg [7:0] out_write,
     output reg ld_write,
     // ADC0 queue
-    input wire [11:0] in_adc0,
+    input wire [9:0] in_adc0,
     input wire em_adc0,
     output reg pp_adc0,
     // ADC1 queue
-    input wire [11:0] in_adc1,
+    input wire [9:0] in_adc1,
     input wire em_adc1,
     output reg pp_adc1,
     // CADC0 queue
-    input wire [11:0] in_cadc0,
+    input wire [9:0] in_cadc0,
     input wire em_cadc0,
     output reg pp_cadc0,
     // CADC1 queue
-    input wire [11:0] in_cadc1,
+    input wire [9:0] in_cadc1,
     input wire em_cadc1,
     output reg pp_cadc1,
     // DIN queue
@@ -65,7 +65,7 @@ reg [1:0] substate_send;
 reg [11:0] data_buffer;
 reg [2:0] sending;
 
-assign pre = 10'b1111111111;
+assign pre = 10'b0000001111;
 
 // Change the state every clock cycle
 always @(posedge clk) begin
@@ -124,7 +124,7 @@ always @(posedge clk or negedge rst_n) begin
                 instr_count <= 1'b0;
 
                 // Prepare to read from the appropriate queue
-                case (instruction[15:13])
+                case (instruction[7:5])
                     ACTIVATE_I: begin
                         activemods <= activemods | (1'b1 << instruction[4:1]);
                     end
@@ -187,7 +187,7 @@ always @(posedge clk or negedge rst_n) begin
                 ld_write <= 1'b1;
                 out_write <= 8'b00000000;
                 rst_out <= 1'b1;
-                substate_send <= 2'b01;
+                if (sending == DIN_T) substate_send <= 2'b10; else substate_send <= 2'b01;
                 pp_din <= 1'b0;
                 pp_adc0 <= 1'b0;
                 pp_adc1 <= 1'b0;

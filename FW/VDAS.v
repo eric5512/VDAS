@@ -3,8 +3,8 @@ input clk;
 input [7:0] din;
 input [9:0] adc0;
 input [9:0] adc1;
-input [11:0] curr0;
-input [11:0] curr1;
+input curr0;
+input curr1;
 input ser_rx;
 output ser_tx;
 output [11:0] dac0;
@@ -38,27 +38,27 @@ wire [7:0] out_din;
 wire pp_din;
 wire em_din;
 
-wire [11:0] out_adc0;
+wire [9:0] out_adc0;
 wire pp_adc0;
 wire em_adc0;
 
-wire [11:0] out_adc1;
+wire [9:0] out_adc1;
 wire pp_adc1;
 wire em_adc1;
 
-wire [11:0] out_curr0;
+wire [9:0] out_curr0;
 wire pp_curr0;
 wire em_curr0;
 
-wire [11:0] out_curr1;
+wire [9:0] out_curr1;
 wire pp_curr1;
 wire em_curr1;
 
 wire [11:0] in_dac0;
 wire [11:0] in_dac1;
 
-wire [11:0] in_curr0;
-wire [11:0] in_curr1;
+wire [19:0] in_curr0;
+wire [19:0] in_curr1;
 
 control cont(
     .clk(clk),
@@ -162,7 +162,7 @@ divider adc1_clk (
 );
 
 queue #(.PTBITS(8),
-        .NBITS(12))
+        .NBITS(10))
 adc0_queue  (
     .in(adc0), 
     .ck(clk_adc0), 
@@ -173,7 +173,7 @@ adc0_queue  (
     .out(out_adc0)
 );
 queue #(.PTBITS(8),
-        .NBITS(12))
+        .NBITS(10))
 adc1_queue (
     .in(adc1), 
     .ck(clk_adc1), 
@@ -211,9 +211,9 @@ deltasigma curr1_i (
 );
 
 queue #(.PTBITS(8),
-        .NBITS(12))
+        .NBITS(10))
 curr0_queue (
-    .in(in_curr0), 
+    .in(in_curr0[9:0]), 
     .ck(clk_curr0), 
     .ld(activemods[1]), 
     .pp(pp_curr0), 
@@ -222,9 +222,9 @@ curr0_queue (
     .out(out_curr0)
 );
 queue #(.PTBITS(8),
-        .NBITS(12))
+        .NBITS(10))
 curr1_queue (
-    .in(in_curr1), 
+    .in(in_curr1[9:0]), 
     .ck(clk_curr1), 
     .ld(activemods[0]), 
     .pp(pp_curr1), 
@@ -236,7 +236,7 @@ curr1_queue (
 AWG dac0_i (
     .in(in_dac0), 
     .ld(1'b0),
-    .addr(1'b0),
+    .addr(10'b0),
     .rst_n(rst_n), 
     .pre(pre),
     .sel(1'b0), 
@@ -246,7 +246,7 @@ AWG dac0_i (
 AWG dac1_i (
     .in(in_dac1), 
     .ld(1'b0), 
-    .addr(1'b0), 
+    .addr(10'b0), 
     .rst_n(rst_n), 
     .pre(pre), 
     .sel(1'b0), 

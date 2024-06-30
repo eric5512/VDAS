@@ -15,8 +15,7 @@ module tb_deltasigma;
     );
 
     localparam CLK_PERIOD = 40;
-    localparam OSR = 3;
-    localparam FACTOR = 2**OSR;
+    localparam FACTOR = 5'b01111;
 
     always #(CLK_PERIOD/2) adc_clk = ~adc_clk;
     always #(CLK_PERIOD/2*FACTOR) clk = ~clk;
