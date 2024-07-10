@@ -33,5 +33,14 @@ test-control: test_bench/tb_control.v control.v
 	vvp tb
 	rm tb
 
+test-control-ins: test_bench/tb_control_ins.v control_ins.v
+	iverilog -g2005-sv -o tb test_bench/tb_control_ins.v control_ins.v
+	vvp tb
+	rm tb
+
+test-control-data: test_bench/tb_control_data.v control_data.v
+	iverilog -g2005-sv -o tb test_bench/tb_control_data.v control_data.v
+	vvp tb
+	rm tb
 
 test: test-parallel test-queue test-AWG test-uart test-deltasigma test-control

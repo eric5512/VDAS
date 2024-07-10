@@ -13,16 +13,16 @@
   <property name="windowTitle">
    <string>Program</string>
   </property>
-  <widget class="QWidget" name="centralwidget"><widget class="PlotWidget" name="p">
+  <widget class="QWidget" name="centralwidget"><widget class="QLCDNumber" name="output">
 <property name="geometry">
  <rect>
   <x>40</x>
   <y>40</y>
-  <width>330</width>
-  <height>280</height>
+  <width>90</width>
+  <height>30</height>
  </rect>
 </property><property name="source" stdset="0">
-<string>self.find("ni")</string>
+<string>self.__find("DI0")</string>
 </property>
 </widget><widget class="QLabel" name="label_1">
 <property name="geometry">
@@ -37,29 +37,27 @@
  <pointsize>10</pointsize>
 </font>
 </property><property name="text">
-<string>Plot</string>
+<string>Button pin</string>
 </property>
-</widget><widget class="QLineEdit" name="no2">
+</widget><widget class="QPushButton" name="input">
 <property name="geometry">
  <rect>
-  <x>390</x>
+  <x>150</x>
   <y>40</y>
   <width>100</width>
-  <height>30</height>
+  <height>40</height>
  </rect>
 </property><property name="font">
 <font>
  <pointsize>12</pointsize>
 </font>
-</property><property name="readOnly">
+</property><property name="checkable">
 <bool>true</bool>
-</property><property name="source" stdset="0">
-<string>5.000000</string>
 </property>
 </widget><widget class="QLabel" name="label_2">
 <property name="geometry">
  <rect>
-  <x>390</x>
+  <x>150</x>
   <y>20</y>
   <width>170</width>
   <height>20</height>
@@ -69,70 +67,10 @@
  <pointsize>10</pointsize>
 </font>
 </property><property name="text">
-<string>Test</string>
+<string>LED pin</string>
 </property>
-</widget><widget class="QLineEdit" name="no">
-<property name="geometry">
- <rect>
-  <x>510</x>
-  <y>40</y>
-  <width>100</width>
-  <height>30</height>
- </rect>
-</property><property name="font">
-<font>
- <pointsize>12</pointsize>
-</font>
-</property><property name="readOnly">
-<bool>true</bool>
-</property><property name="source" stdset="0">
-<string>(5.000000*(self.find("ni")+1.000000))</string>
-</property>
-</widget><widget class="QLabel" name="label_3">
-<property name="geometry">
- <rect>
-  <x>510</x>
-  <y>20</y>
-  <width>170</width>
-  <height>20</height>
- </rect>
-</property><property name="font">
-<font>
- <pointsize>10</pointsize>
-</font>
-</property><property name="text">
-<string>Example output</string>
-</property>
-</widget><widget class="QDoubleSpinBox" name="ni">
-<property name="geometry">
- <rect>
-  <x>630</x>
-  <y>40</y>
-  <width>100</width>
-  <height>30</height>
- </rect>
-</property><property name="font">
-<font>
- <pointsize>12</pointsize>
-</font>
-</property>
-</widget><widget class="QLabel" name="label_4">
-<property name="geometry">
- <rect>
-  <x>630</x>
-  <y>20</y>
-  <width>170</width>
-  <height>20</height>
- </rect>
-</property><property name="font">
-<font>
- <pointsize>10</pointsize>
-</font>
-</property><property name="text">
-<string>Example input</string>
-</property>
-</widget><property name="DAC0" stdset="0">
-<string>(0b0100 &lt;&lt; 12 + (int((self.find("ni")+10)/20) &#38; 0b111111111111)).to_bytes(2, 'big')</string>
+</widget><property name="DO0" stdset="0">
+<string>((0b001000 &lt;&lt; 2) + (0b10 if self.__find("input") else 0b00)).to_bytes(1, 'big')</string>
 </property></widget>
 </widget>
 <customwidgets>

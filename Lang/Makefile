@@ -8,15 +8,11 @@ OCAMLBUILD      := ocamlbuild -pkg unix -I src -use-ocamlfind -use-menhir -menhi
 
 COMP            := compiler
 
-LS 				:= ls
-
 all:
 	rm -f ./src/*.cmi
 	$(OCAMLBUILD) $(COMP).native
-	$(OCAMLBUILD) $(LS).native
 	cp ./_build/src/*.cmi ./src/
 	mv $(COMP).native $(COMP)
-	mv $(LS).native $(LS)
 
 test: all
 	./test/test.sh
@@ -24,10 +20,8 @@ test: all
 debug:
 	rm -f ./src/*.cmi
 	$(OCAMLBUILD) $(COMP).d.byte
-	$(OCAMLBUILD) $(LS).d.byte
 	cp ./_build/src/*.cmi ./src/
 	mv $(COMP).d.byte $(COMP)
-	mv $(LS).d.byte $(LS)
 
 clean:
 	rm -f *~ .*~

@@ -4,7 +4,7 @@ type device_t = ADC0 | ADC1
 | DO0 | DO1 | DO2 | DO3 | DO4 | DO5 | DO6 | DO7
 | DAC0 | DAC1;;
 
-exception DeviceError of device_t * string;;
+exception DeviceError of string * string;;
 
 let is_input (dev: device_t): bool = match dev with
 | ADC0 | ADC1 | CADC0 | CADC1
@@ -82,23 +82,16 @@ let dev_dict (ast: Util.program_t): devices_t =
 
 let voltage_fs: float = 20.0;;
 
-let activate (dev: device_t): bytes = (* 0b000DDDD0 *)
+let activate (dev: device_t): bytes = (* 0b000DDD00 *)
   let activate_size = 1 in
   let ret = Bytes.create activate_size in
-  Bytes.set_int8 ret (match dev with
-    | DI0 -> 0b00000000 
-    | DI1 -> 0b00000010 
-    | DI2 -> 0b00000100 
-    | DI3 -> 0b00000110 
-    | DI4 -> 0b00001000 
-    | DI5 -> 0b00001010 
-    | DI6 -> 0b00001100 
-    | DI7 -> 0b00001110
-    | ADC0 -> 0b00010000
-    | ADC1 -> 0b00010010
-    | CADC0 -> 0b00010100
-    | CADC1 -> 0b00010110
-    | _ -> raise (DeviceError (dev, "activate"))) 0;
+  Bytes.set_int8 ret 0 (match dev with
+    | DI0 | DI1 | DI2 | DI3 | DI4 | DI5 | DI6 | DI7 -> 0b00000000
+    | ADC0 -> 0b00000100
+    | ADC1 -> 0b00001000
+    | CADC0 -> 0b00001100
+    | CADC1 -> 0b00010000
+    | _ -> raise (DeviceError (dev_to_string dev, "activate")));
   ret;;
 
 let set_digital_python (dev: device_t) (value: string): string = 
@@ -111,8 +104,8 @@ let set_digital_python (dev: device_t) (value: string): string =
     | DO5 -> "101"
     | DO6 -> "110"
     | DO7 -> "111"
-    | _ -> raise (DeviceError (dev, "digital set")) in
-  Printf.sprintf "(0b001%s &lt;&lt; 2 + 0b1 if %s else 0b0 &lt;&lt; 1).to_bytes(1, 'big')" dev_str value;;
+    | _ -> raise (DeviceError (dev_to_string dev, "digital set")) in
+  Printf.sprintf "((0b001%s &lt;&lt; 2) + (0b10 if %s else 0b00)).to_bytes(1, 'big')" dev_str value;;
 
 let set_digital (dev: device_t) (value: bool): bytes = (* 0b001DDDV0 *)
   let set_digital_size = 1 in
@@ -126,15 +119,15 @@ let set_digital (dev: device_t) (value: bool): bytes = (* 0b001DDDV0 *)
     | DO5 -> 0b00110100
     | DO6 -> 0b00111000
     | DO7 -> 0b00111100
-    | _ -> raise (DeviceError (dev, "digital set"))) lor (if value then 0b10 else 0b00) ) 0;
+    | _ -> raise (DeviceError (dev_to_string dev, "digital set"))) lor (if value then 0b10 else 0b00) ) 0;
   ret;;
 
 let set_analog_python (dev: device_t) (value: string): string = 
   let dev_str = match dev with
     | DAC0 -> "0"
     | DAC1 -> "1"
-    | _ -> raise (DeviceError (dev, "analog set")) in
-  Printf.sprintf "(0b010%s &lt;&lt; 12 + (int((%s+10)/20) &#38; 0b111111111111)).to_bytes(2, 'big')" dev_str value;;
+    | _ -> raise (DeviceError (dev_to_string dev, "analog set")) in
+  Printf.sprintf "((0b010%s &lt;&lt; 12) + (int((%s+10)/20) &#38; 0b111111111111)).to_bytes(2, 'big')" dev_str value;;
 
 let set_analog (dev: device_t) (fvalue: float): bytes = (* 0b010DNNNN NNNNNNNN *)
   let set_analog_size = 2 in
@@ -144,7 +137,7 @@ let set_analog (dev: device_t) (fvalue: float): bytes = (* 0b010DNNNN NNNNNNNN *
   let dev_val = (match dev with
     | DAC0 -> 0b01000000
     | DAC1 -> 0b01010000
-    | _ -> raise (DeviceError (dev, "analog set"))) in
+    | _ -> raise (DeviceError (dev_to_string dev, "analog set"))) in
   let ret = Bytes.create set_analog_size in
   Bytes.set_uint8 ret 0 (dev_val lor hi_val);
   Bytes.set_uint8 ret 1 (lo_val);

@@ -1,5 +1,6 @@
-module VDAS(clk, din, adc0, adc1, curr0, curr1, dout, dac0, dac1, ser_rx, ser_tx);
+module VDAS(clk, rst_n, din, adc0, adc1, curr0, curr1, dout, dac0, dac1, ser_rx, ser_tx);
 input clk;
+input rst_n;
 input [7:0] din;
 input [9:0] adc0;
 input [9:0] adc1;
@@ -12,7 +13,7 @@ output [11:0] dac1;
 output [7:0] dout;
 
 wire rst_n;
-wire [11:0] activemods;
+wire [4:0] activemods;
 wire [9:0] pre;
 
 wire [7:0] in_rx;
@@ -96,8 +97,7 @@ control cont(
     .aout1(in_dac1),
     .pre(pre),
 
-    .rst_n(1'b1),
-    .rst_out(rst_n)
+    .rst_n(rst_n)
 );
 
 uart_rx rx (
@@ -143,7 +143,7 @@ divider din_clk (
 queue din_queue (
     .in(din), 
     .ck(clk_din), 
-    .ld(activemods[11]), 
+    .ld(activemods[0]), 
     .pp(pp_din), 
     .rst_n(rst_n), 
     .em(em_din), 
@@ -166,7 +166,7 @@ queue #(.PTBITS(8),
 adc0_queue  (
     .in(adc0), 
     .ck(clk_adc0), 
-    .ld(activemods[3]), 
+    .ld(activemods[1]), 
     .pp(pp_adc0), 
     .rst_n(rst_n), 
     .em(em_adc0), 
@@ -215,7 +215,7 @@ queue #(.PTBITS(8),
 curr0_queue (
     .in(in_curr0[9:0]), 
     .ck(clk_curr0), 
-    .ld(activemods[1]), 
+    .ld(activemods[3]), 
     .pp(pp_curr0), 
     .rst_n(rst_n), 
     .em(em_curr0), 
@@ -226,7 +226,7 @@ queue #(.PTBITS(8),
 curr1_queue (
     .in(in_curr1[9:0]), 
     .ck(clk_curr1), 
-    .ld(activemods[0]), 
+    .ld(activemods[4]), 
     .pp(pp_curr1), 
     .rst_n(rst_n), 
     .em(em_curr1), 

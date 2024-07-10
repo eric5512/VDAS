@@ -1,1 +1,0 @@
-let () = Util.get_lines (open_in "test.vdas" |> Lexing.from_channel) |> ignore;;

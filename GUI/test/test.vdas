@@ -1,18 +1,11 @@
-define var 5
+define voltage 5
 
-NumInput ni(label="Example input")
+Plot power(label="Power consumption")
 
-NumDisplay no(label="Example output")
+DAC0 source()
 
-NumDisplay no2(label="Test")
+CurrentADC0 current()
 
-Plot p(label="Plot")
+voltage -> source
 
-DAC0 d0()
-
-5 -> no2
-
-var * (ni + 1) -> no
-
-
-ni -> p
+current * voltage -> power

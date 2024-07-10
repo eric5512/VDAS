@@ -2,6 +2,7 @@ from io import TextIOWrapper
 from typing import Self
 class Project:
     __resource: TextIOWrapper
+    path: str
 
     def __init__(self) -> None:
         self.__resource = None
@@ -26,17 +27,18 @@ class Project:
         self.__resource.truncate(0)
         self.__resource.write(text)
         self.__resource.flush()
-
         return True
     
     def load_project(path: str) -> Self:
         proj = Project()
+        proj.path = path
         res = open(path, "+r")
         proj.__resource = res
         return proj
     
     def new_project(path: str, name: str) -> Self:
         proj = Project()
+        proj.path = path
         res = open(path + '\\' + name + '.vdas', '+x')
         proj.__resource = res
         return proj

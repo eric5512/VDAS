@@ -1,2 +1,9 @@
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-Sample text for test 2
+BoolInput input(label="LED pin")
+
+BoolDisplay output(label="Button pin")
+
+DI0 button()
+DO0 led()
+
+button -> output
+input -> led

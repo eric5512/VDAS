@@ -1,14 +1,26 @@
 import sys
+import subprocess
+import struct
 
 from PySide6.QtGui import QCloseEvent, QShortcut, QKeySequence
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PySide6.QtCore import Qt
 
 from windows.ui_window import Ui_MainWindow
 
 from loadProject import LoadWindow
 from newProject import NewWindow
+from connect import ConnectWindow
 
 from project import Project
+from program import createProgram
+
+def create_error_box(title, text):
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Critical)
+    msg.setWindowTitle(title)
+    msg.setText(text)
+    msg.exec_()
 
 class MainWindow(QMainWindow):
     project: Project
@@ -50,7 +62,30 @@ class MainWindow(QMainWindow):
                 self.ui.program.setText(self.project.get_text())
 
     def __click_actionCompile(self) -> None:
-        pass
+        if not self.project.is_empty():
+            connect = ConnectWindow()
+            if connect.exec():
+                self.project.save(self.ui.program.toPlainText())
+                compiler = subprocess.Popen(["wsl", "../Lang/compiler", self.project.path.replace("\\", "/").replace("C:", "/mnt/c"), "./init"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                compiler.wait()
+                if compiler.returncode == 0:
+                    compiler.stderr.read()
+                    with open("program.ui", "w+t") as ui:
+                        ui.truncate(0)
+                        ui.write(compiler.stdout.read().decode())
+                    self.program = createProgram()(connect.get_device().name)
+                    self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
+                    self.program.show()
+                    self.setEnabled(False)
+                    self.program.destroyed.connect(self.__on_program_closed)
+                else:
+                    create_error_box("Error during compilation", compiler.stderr.read().decode())
+
+        else:
+            create_error_box("Error: empty project", "No selected project")
+
+    def __on_program_closed(self):
+        self.setEnabled(True)
 
     def __click_actionNew(self) -> None:
         new_window = NewWindow()
@@ -62,7 +97,19 @@ class MainWindow(QMainWindow):
                 self.ui.program.setText(self.project.get_text())
 
     def __click_actionSave(self) -> None:
-        self.project.save(self.ui.program.toPlainText())
+        if not self.project.is_empty():
+            self.project.save(self.ui.program.toPlainText())
+            ls = subprocess.Popen(["wsl", "../Lang/compiler", self.project.path.replace("\\", "/").replace("C:", "/mnt/c"), "./init"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            ls.wait()
+            if ls.returncode == 0:
+                self.ui.output.setText("No errors found")
+                ls.stdout.read().decode()
+            else:
+                self.ui.output.setText(ls.stderr.read().decode())
+                
+        else:
+            create_error_box("Error: empty project", "No selected project")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
