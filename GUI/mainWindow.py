@@ -1,6 +1,5 @@
 import sys
 import subprocess
-import struct
 
 from PySide6.QtGui import QCloseEvent, QShortcut, QKeySequence
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox

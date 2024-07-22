@@ -13,16 +13,20 @@
   <property name="windowTitle">
    <string>Program</string>
   </property>
-  <widget class="QWidget" name="centralwidget"><widget class="QLCDNumber" name="output">
+  <widget class="QWidget" name="centralwidget"><widget class="QPushButton" name="input1">
 <property name="geometry">
  <rect>
   <x>40</x>
   <y>40</y>
-  <width>90</width>
-  <height>30</height>
+  <width>100</width>
+  <height>40</height>
  </rect>
-</property><property name="source" stdset="0">
-<string>self.__find("DI0")</string>
+</property><property name="font">
+<font>
+ <pointsize>12</pointsize>
+</font>
+</property><property name="checkable">
+<bool>true</bool>
 </property>
 </widget><widget class="QLabel" name="label_1">
 <property name="geometry">
@@ -37,40 +41,10 @@
  <pointsize>10</pointsize>
 </font>
 </property><property name="text">
-<string>Button pin</string>
-</property>
-</widget><widget class="QPushButton" name="input">
-<property name="geometry">
- <rect>
-  <x>150</x>
-  <y>40</y>
-  <width>100</width>
-  <height>40</height>
- </rect>
-</property><property name="font">
-<font>
- <pointsize>12</pointsize>
-</font>
-</property><property name="checkable">
-<bool>true</bool>
-</property>
-</widget><widget class="QLabel" name="label_2">
-<property name="geometry">
- <rect>
-  <x>150</x>
-  <y>20</y>
-  <width>170</width>
-  <height>20</height>
- </rect>
-</property><property name="font">
-<font>
- <pointsize>10</pointsize>
-</font>
-</property><property name="text">
-<string>LED pin</string>
+<string>LED pin 1</string>
 </property>
 </widget><property name="DO0" stdset="0">
-<string>((0b001000 &lt;&lt; 2) + (0b10 if self.__find("input") else 0b00)).to_bytes(1, 'big')</string>
+<string>((0b001000 &lt;&lt; 2) + (0b10 if self.__find("input1") else 0b00)).to_bytes(1, 'big')</string>
 </property></widget>
 </widget>
 <customwidgets>

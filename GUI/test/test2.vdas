@@ -1,9 +1,6 @@
-BoolInput input(label="LED pin")
+BoolInput input1(label="LED pin 1")
 
-BoolDisplay output(label="Button pin")
+DO0 led1()
 
-DI0 button()
-DO0 led()
-
-button -> output
-input -> led
+input1 -> led1
+dawdawd

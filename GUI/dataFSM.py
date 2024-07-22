@@ -6,11 +6,11 @@ class DataFSM:
     __STATES = Enum('STATES', ['START', 'HEADER', 'DATA'])
     __SUBSTATES = Enum('SUBSTATES', ['BYTE1', 'BYTE2'])
 
-    __DIN = 0b00100000
-    __ADC0 = 0b01000000
-    __ADC1 = 0b01100000
-    __CADC0 = 0b10000000
-    __CADC1 = 0b10100000
+    __DIN = 0b00000001
+    __ADC0 = 0b00000010
+    __ADC1 = 0b00000011
+    __CADC0 = 0b00000100
+    __CADC1 = 0b00000101
 
     def __init__(self) -> None:
         self.__state = self.__STATES.START
@@ -31,7 +31,7 @@ class DataFSM:
 
     def recieve(self, byte: bytes):
         byte = byte[0]
-        print(f"Received {byte}")
+        # print(f"Received {byte}")
         match self.__state:
             case self.__STATES.START:
                 if byte == 0:

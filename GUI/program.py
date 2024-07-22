@@ -16,6 +16,9 @@ def createProgram():
             self.outputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget }
             self.bindings = { n:(Program.__get_source(a)) for n, a in self.outputs.items() }
             self.plot_data = { n:[] for n, a in self.outputs.items() if type(a) == pg.PlotWidget }
+            self.commands = dict()
+            # for w in self.inputs:
+            #     if 
             self.commands = [v for i in ["DAC0", "DAC1", "DO0", "DO1", "DO2", "DO3", "DO4", "DO5", "DO6", "DO7"] if (v := self.centralwidget.property(i)) != None]
             self.data = {
                 "ADC0": 0,

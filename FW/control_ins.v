@@ -31,7 +31,8 @@ reg [1:0] substate_send;
 reg [9:0] data_buffer;
 reg [2:0] sending;
 
-assign pre = 10'b0000001111;
+assign pre = 10'b1111111111;
+// assign pre = 10'b0000001111;
 
 // Coordinate the reception and emission of data
 always @(posedge clk or negedge rst_n) begin

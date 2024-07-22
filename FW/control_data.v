@@ -28,10 +28,9 @@ module control_data(
 );
 
 localparam INIT_RV = 3'd0;
-localparam SEND_ZERO_RV = 3'd1;
+localparam SEND_SOURCE_RV = 3'd1;
 localparam SEND_RV = 3'd2;
 localparam COLLECT_RV = 3'd3;
-localparam SEND_SOURCE_RV = 3'd4;
 
 localparam DIN_T = 3'b001;
 localparam ADC0_T = 3'b010;
@@ -62,27 +61,32 @@ always @(posedge clk or negedge rst_n) begin
         case (curr_state)
             COLLECT_RV: begin
                 if (!em_din) begin
-                    ld_write <= 1'b0;
+                    ld_write <= 1'b1;
+                    out_write <= 1'b0;
                     sending <= DIN_T;
                     data_buffer[7:0] <= in_din;
                     pp_din <= 1'b1;
                 end else if (!em_adc0) begin
-                    ld_write <= 1'b0;
+                    ld_write <= 1'b1;
+                    out_write <= 1'b0;
                     sending <= ADC0_T;
                     data_buffer <= in_adc0;
                     pp_adc0 <= 1'b1;
                 end else if (!em_adc1) begin
-                    ld_write <= 1'b0;
+                    ld_write <= 1'b1;
+                    out_write <= 1'b0;
                     sending <= ADC1_T;
                     data_buffer <= in_adc1;
                     pp_adc1 <= 1'b1;
                 end else if (!em_cadc0) begin
-                    ld_write <= 1'b0;
+                    ld_write <= 1'b1;
+                    out_write <= 1'b0;
                     sending <= CADC0_T;
                     data_buffer <= in_cadc0;
                     pp_cadc0 <= 1'b1;
                 end else if (!em_cadc1) begin
-                    ld_write <= 1'b0;
+                    ld_write <= 1'b1;
+                    out_write <= 1'b0;
                     sending <= CADC1_T;
                     data_buffer <= in_cadc1;
                     pp_cadc1 <= 1'b1;
@@ -92,19 +96,14 @@ always @(posedge clk or negedge rst_n) begin
                 end
             end
 
-            SEND_ZERO_RV: begin
+            SEND_SOURCE_RV: begin
                 ld_write <= 1'b1;
-                out_write <= 8'b0;
-                pp_din <= 1'b0;
+                out_write <= {5'b0, sending};
                 pp_adc0 <= 1'b0;
                 pp_adc1 <= 1'b0;
                 pp_cadc0 <= 1'b0;
                 pp_cadc1 <= 1'b0;
-            end
-
-            SEND_SOURCE_RV: begin
-                ld_write <= 1'b1;
-                out_write <= {5'b0, sending};
+                pp_din <= 1'b0;
                 if (sending == DIN_T) substate_send <= 2'b10; else substate_send <= 2'b01;
             end
 
@@ -139,8 +138,7 @@ always @(negedge clk or negedge rst_n) begin
         next_state = INIT_RV;
     else case (curr_state)
         INIT_RV: next_state = COLLECT_RV;
-        COLLECT_RV: if (sending != 3'b000) next_state = SEND_ZERO_RV; else next_state = COLLECT_RV;
-        SEND_ZERO_RV: next_state = SEND_SOURCE_RV;
+        COLLECT_RV: if (sending != 3'b000) next_state = SEND_SOURCE_RV; else next_state = COLLECT_RV;
         SEND_SOURCE_RV: next_state = SEND_RV;
         SEND_RV: if (substate_send == 2'b00) next_state = COLLECT_RV; else next_state = SEND_RV;
         default: next_state = INIT_RV;
