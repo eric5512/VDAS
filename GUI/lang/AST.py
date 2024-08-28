@@ -1,37 +1,39 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Union
+from typing import Union, Tuple, List, Optional
 
-@dataclass
-class Comp:
-    name: str
-    attribute: Tuple[str, str] = None
+class AST:
+    @dataclass
+    class Comp:
+        name: str
+        attribute: Optional[Tuple[str, str]] = None
 
-@dataclass
-class Op:
-    operator: str
-    left: 'Expr'
-    right: 'Expr'
+    @dataclass
+    class Op:
+        operator: str
+        left: 'AST.Expr'
+        right: 'AST.Expr'
 
-@dataclass
-class Const:
-    value: float
+    @dataclass
+    class Const:
+        value: float
 
-Expr = Union[Op, Comp, Const]
+    Expr = Union['AST.Op', 'AST.Comp', 'AST.Const']
 
-@dataclass
-class Init:
-    type: str
-    name: str
-    args: List[Tuple[str, str]]
+    @dataclass
+    class Init:
+        type: str
+        name: str
+        args: List[Tuple[str, str]]
 
-@dataclass
-class Def:
-    name: str
-    value: float
+    @dataclass
+    class Def:
+        name: str
+        value: float
 
-@dataclass
-class Link:
-    expr: Expr
-    comp: Comp
+    @dataclass
+    class Link:
+        expr: 'AST.Expr'
+        comp: 'AST.Comp'
 
-Ins = Union[Init, Def, Link]
+    Ins = Union['AST.Init', 'AST.Def', 'AST.Link']
+

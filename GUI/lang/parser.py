@@ -7,7 +7,7 @@ grammar = """
 
 instruction: "define" ID NUM                -> def
            | expr "->" component            -> link
-           | ID ID "(" [args ("," args)*] ")" -> init
+           | ID ID "(" [(args ","?)*] ")" -> init
 
 args: ID "=" ESCAPED_STRING
 
@@ -36,50 +36,50 @@ component: ID                                -> comp_name
 class VLang(Transformer):
     def def_(self, items):
         name, value = items
-        return Def(name, float(value))
+        return AST.Def(name, float(value))
     
     def link(self, items):
         expr, comp = items
-        return Link(expr, comp)
+        return AST.Link(expr, comp)
     
     def init(self, items):
         type_, name, *args = items
-        args_list = [tuple(arg.children) for arg in args[0].children] if args else []
-        return Init(type_, name, args_list)
+        return AST.Init(type_, name, args)
     
     def args(self, items):
         return (items[0], items[1][1:-1])
     
     def const(self, items):
-        return Const(float(items[0]))
+        return AST.Const(float(items[0]))
 
     def comp_name(self, items):
-        return Comp(items[0])
+        return AST.Comp(items[0])
     
     def comp_with_attr(self, items):
-        return Comp(items[0], (items[0], items[2]))
+        return AST.Comp(items[0], (items[0], items[2]))
 
     def add(self, items):
-        return Op('Add', items[0], items[1])
+        return AST.Op('Add', items[0], items[1])
 
     def sub(self, items):
-        return Op('Sub', items[0], items[1])
+        return AST.Op('Sub', items[0], items[1])
 
     def mul(self, items):
-        return Op('Mul', items[0], items[1])
+        return AST.Op('Mul', items[0], items[1])
 
     def div(self, items):
-        return Op('Div', items[0], items[1])
+        return AST.Op('Div', items[0], items[1])
 
     def pow(self, items):
-        return Op('Pow', items[0], items[1])
+        return AST.Op('Pow', items[0], items[1])
 
 # Initialize parser with the grammar and transformer
 parser = Lark(grammar, parser='lalr', transformer=VLang())
 
-# Example usage
-try:
-    parsed = parser.parse('define x 42\n')
-    print(parsed)
-except Exception as e:
-    print(e)
+if __name__ == "__main__":
+    try:
+        with open("./test/test.vdas") as program:
+            parsed = parser.parse("Plot power(label = \"Power consumption\")")
+            print(parsed)
+    except Exception as e:
+        print(e)

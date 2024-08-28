@@ -63,23 +63,23 @@ class MainWindow(QMainWindow):
     def __click_actionCompile(self) -> None:
         if not self.project.is_empty():
             connect = ConnectWindow()
-            if connect.exec():
-                self.project.save(self.ui.program.toPlainText())
-                compiler = subprocess.Popen(["wsl", "../Lang/compiler", self.project.path.replace("\\", "/").replace("C:", "/mnt/c"), "./init"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                compiler.wait()
-                if compiler.returncode == 0:
-                    compiler.stderr.read()
-                    with open("program.ui", "w+t") as ui:
-                        ui.truncate(0)
-                        ui.write(compiler.stdout.read().decode())
-                    self.program = createProgram()(connect.get_device().name)
-                    self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
-                    self.program.show()
-                    self.setEnabled(False)
-                    self.program.destroyed.connect(self.__on_program_closed)
-                else:
-                    create_error_box("Error during compilation", compiler.stderr.read().decode())
-
+            self.project.save(self.ui.program.toPlainText())
+            
+            # if connect.exec():
+                # compiler = subprocess.Popen(["wsl", "../Lang/compiler", self.project.path.replace("\\", "/").replace("C:", "/mnt/c"), "./init"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # compiler.wait()
+                # if compiler.returncode == 0:
+                #     compiler.stderr.read()
+                #     with open("program.ui", "w+t") as ui:
+                #         ui.truncate(0)
+                #         ui.write(compiler.stdout.read().decode())
+                #     self.program = createProgram()(connect.get_device().name)
+                #     self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
+                #     self.program.show()
+                #     self.setEnabled(False)
+                #     self.program.destroyed.connect(self.__on_program_closed)
+                # else:
+                #     create_error_box("Error during compilation", compiler.stderr.read().decode())
         else:
             create_error_box("Error: empty project", "No selected project")
 
