@@ -19,15 +19,18 @@ Devices = Dict[str, Device]
 
 VOLTAGE_FS = 20.0
 
+def is_device(init: AST.Init) -> bool:
+    try:
+        Device[init.type]
+        return True
+    except KeyError:
+        return False
+
 def get_devices(ast: List[AST]) -> Devices:
     ret = dict()
     for i in ast:
-        if type(i) == AST.Init:
-            try:
-                ret[i.name] = Device[i.type]
-            except KeyError:
-                continue
-
+        if type(i) == AST.Init and is_device(i):
+            ret[i.name] = Device[i.type]
 
 def activate(dev: Device) -> bytes:
     match dev:

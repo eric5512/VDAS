@@ -1,4 +1,5 @@
 import sys
+import PySide6.QtUiTools
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QCloseEvent
 import PySide6.QtWidgets
@@ -7,19 +8,16 @@ from serialInterface import SerialInterface
 from threading import Thread
 
 def createProgram():
-    uiclass, baseclass = pg.Qt.loadUiType("program.ui")
+    uiclass, baseclass = PySide6.QtUiTools.loadUiType("program.ui")
     class Program(uiclass, baseclass):
-        def __init__(self, port):
+        def __init__(self, port, commands, sources):
             super().__init__()
             self.setupUi(self)
             self.inputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton or type(a) == PySide6.QtWidgets.QDoubleSpinBox }
             self.outputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget }
-            self.bindings = { n:(Program.__get_source(a)) for n, a in self.outputs.items() }
             self.plot_data = { n:[] for n, a in self.outputs.items() if type(a) == pg.PlotWidget }
-            self.commands = dict()
-            # for w in self.inputs:
-            #     if 
-            self.commands = [v for i in ["DAC0", "DAC1", "DO0", "DO1", "DO2", "DO3", "DO4", "DO5", "DO6", "DO7"] if (v := self.centralwidget.property(i)) != None]
+            self.commands = commands
+            self.sources = sources
             self.data = {
                 "ADC0": 0,
                 "ADC1": 0,
@@ -53,15 +51,14 @@ def createProgram():
             read_thread = Thread(target=SerialInterface.receive_data_process, args=(self.__receive_data,))
             read_thread.start()
 
-        def closeEvent(self, event: QCloseEvent) -> None:
+        def closeEvent(self, _: QCloseEvent) -> None:
             SerialInterface.close()
 
         def __send_commands(self):
-            for i in self.commands:
-                by = eval(i)
-                SerialInterface.send_command(by)
+            for func in self.commands:
+                SerialInterface.send_command(func())
 
-        def __find(self, name):
+        def __find(self, name: str) -> float:
             if name in self.data:
                 return self.data[name]
             if name in self.inputs:
@@ -75,7 +72,7 @@ def createProgram():
 
         def __refresh(self, name):
             element = self.outputs[name]
-            value = self.bindings[name]
+            value = self.sources[name]
             
             if type(element) == PySide6.QtWidgets.QLineEdit:
                 element.setText(str(eval(value)))
@@ -112,9 +109,6 @@ def createProgram():
         def __plot_add_point(self, name, value):
             self.plot_data[name].append(value)
             self.outputs[name].plot(self.plot_data[name])
-
-        def __get_source(widget):
-            return widget.property("source")
         
     return Program
 
