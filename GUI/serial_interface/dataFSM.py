@@ -31,7 +31,7 @@ class DataFSM:
 
     def recieve(self, byte: bytes):
         byte = byte[0]
-        # print(f"Received {byte}")
+        print(f"Received {byte}")
         match self.__state:
             case self.__STATES.START:
                 if byte == 0:
@@ -51,7 +51,7 @@ class DataFSM:
                             self.__state = self.__STATES.START
                             return (self.__num_to_type(), self.__data)
                         
-                        self.__state = self.__SUBSTATES.BYTE2
+                        self.__substate = self.__SUBSTATES.BYTE2
 
                     case self.__SUBSTATES.BYTE2:
                         self.__data |= byte << 8

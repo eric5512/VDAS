@@ -1,17 +1,17 @@
 from dataclasses import dataclass
-from typing import Union, Tuple, List, Optional
+from typing import Union, Tuple, List
 
 class AST:
     @dataclass
     class Comp:
         name: str
-        attribute: Optional[Tuple[str, str]] = None
+        attribute: str | None = None
 
     @dataclass
     class Op:
         operator: str
-        left: 'AST.Expr'
-        right: 'AST.Expr'
+        left: 'AST.Op'
+        right: 'AST.Op'
 
     @dataclass
     class Const:

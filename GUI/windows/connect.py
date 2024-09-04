@@ -20,4 +20,4 @@ class ConnectWindow(QDialog):
         return get_ports.comports()
 
     def get_device(self) -> str:
-        return self.__devices[self.ui.comboDevice.currentIndex()]
+        return self.__devices[self.ui.comboDevice.currentIndex()].name

@@ -4,20 +4,28 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QCloseEvent
 import PySide6.QtWidgets
 import pyqtgraph as pg
-from serialInterface import SerialInterface
+from serial_interface.serialInterface import SerialInterface
 from threading import Thread
+
+from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QBuffer, QByteArray, QIODeviceBase
+
+from typing import Dict, Callable, List
 
 def createProgram():
     uiclass, baseclass = PySide6.QtUiTools.loadUiType("program.ui")
     class Program(uiclass, baseclass):
-        def __init__(self, port, commands, sources):
+        def __init__(self, port: str, config: bytes, commands: List[Callable[[Callable[[str], float]], Callable[[], bytes]]], 
+                     sources: Dict[str, Callable[[Callable[[str], float]], Callable[[], float]]]):
+                           
             super().__init__()
             self.setupUi(self)
             self.inputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QPushButton or type(a) == PySide6.QtWidgets.QDoubleSpinBox }
             self.outputs = { n:a for n, a in self.__dict__.items() if type(a) == PySide6.QtWidgets.QLineEdit or type(a) == PySide6.QtWidgets.QLCDNumber or type(a) == pg.PlotWidget }
             self.plot_data = { n:[] for n, a in self.outputs.items() if type(a) == pg.PlotWidget }
-            self.commands = commands
-            self.sources = sources
+            self.commands = [ v(self.__find) for v in commands ]
+            self.sources = { k:v(self.__find) for k, v in sources.items() }
             self.data = {
                 "ADC0": 0,
                 "ADC1": 0,
@@ -41,12 +49,7 @@ def createProgram():
 
             SerialInterface.connect(port)
 
-            try:
-                with open("./init", "rb") as f:
-                    init = f.read()
-                    SerialInterface.send_command(init)
-            except:
-                pass
+            SerialInterface.send_command(config)
 
             read_thread = Thread(target=SerialInterface.receive_data_process, args=(self.__receive_data,))
             read_thread.start()
@@ -75,10 +78,10 @@ def createProgram():
             value = self.sources[name]
             
             if type(element) == PySide6.QtWidgets.QLineEdit:
-                element.setText(str(eval(value)))
+                element.setText(str(value()))
 
             if type(element) == PySide6.QtWidgets.QLCDNumber:
-                element.display(0 if eval(value) == 0 else 1)
+                element.display(0 if value() == 0 else 1)
 
             if type(element) == pg.PlotWidget:
                 self.__plot_add_point(name, value)
@@ -88,6 +91,7 @@ def createProgram():
             self.outputs[name].plot(self.plot_data[name])
 
         def __receive_data(self, data):
+            print(data)
             name, value = data
             if name == "DI":
                 self.data["DI0"] = 1 if value & (0b1 << 0) != 0 else 0

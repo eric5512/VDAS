@@ -1,7 +1,7 @@
-from parser import parser
-from AST import AST
-import UI
-import VASM
+from lang.parser import parser
+from lang.AST import AST
+import lang.UI as UI
+import lang.VASM as VASM
 from typing import Tuple, Dict, Callable, List, Any
 
 class DataSource(Exception):
@@ -37,7 +37,7 @@ class Compiler():
         for element in self.__ast:
             match element:
                 case AST.Init(ty, name, args):
-                    if (props := UI.clss_to_properties()) != None:
+                    if (props := UI.clss_to_properties(ty)) != None:
                         if name not in self.__widgets.keys():
                             self.__widgets[name] = ((ty, name, args), props)
                         else:
@@ -51,8 +51,8 @@ class Compiler():
                             raise ElementRedefinition(name)
                     else:
                         raise InexistentType(element.type)
-                case AST.Link(*atts):
-                    self.__links.append(atts)
+                case AST.Link(l, r):
+                    self.__links.append((l, r))
                 case AST.Def(name, value):
                     if name not in self.__vars.keys():
                         self.__vars[name] = value
@@ -62,8 +62,8 @@ class Compiler():
                     raise RuntimeError("Unreacheable")
 
     def compile(self) -> Tuple[str, bytes, 
-                           Dict[str, Callable[[int], bytes]], 
-                           Dict[str, Callable[[], None]]]:
+                           List[Callable[[Callable[[str], float]], Callable[[], bytes]]], 
+                           Dict[str, Callable[[Callable[[str], float]], Callable[[], float]]]]:
         ui = self.__generate_ui()
         config = self.__get_config()
         commands = self.__get_output_commands()
@@ -83,12 +83,30 @@ class Compiler():
         for left, right in self.__links:
             if right.name in self.__widgets.keys():
                 if right.name not in sources.keys():
-                    sources[right.name] = lambda finder: Compiler.__op_to_func(left, finder)
+                    sources[right.name] = lambda finder, left=left, devices=self.__in_devices: Compiler.__op_to_func(left, finder, devices)
                 else:
                     raise MultipleSources(right.name)
+                
+        return sources
 
-    def __op_to_func(operation: AST.Op, finder: Callable[[str], float]) -> Callable[[], float]:
-        pass # TODO: Add conversion from AST op to python function
+    def __op_to_func(operation: AST.Op, finder: Callable[[str], float], devices: Dict[str, VASM.Device]) -> Callable[[], float]:
+        def rec(op):
+            match op:
+                case AST.Op("Add", l, r):
+                    return rec(l) + rec(r)
+                case AST.Op("Sub", l, r):
+                    return rec(l) - rec(r)
+                case AST.Op("Mul", l, r):
+                    return rec(l) * rec(r)
+                case AST.Op("Div", l, r):
+                    return rec(l) / rec(r)
+                case AST.Op("Pow", l, r):
+                    return rec(l) ** rec(r)
+                case AST.Const(val):
+                    return val
+                case AST.Comp(name, _):
+                    return finder(devices[name].name)
+        return lambda: rec(operation)
 
     def __generate_ui(self) -> str:
         PAD = 20
@@ -96,7 +114,7 @@ class Compiler():
         y = 2*PAD
         ln = 0
         widgets = []
-        for (element, properties) in self.__widgets:
+        for (element, properties) in self.__widgets.values():
             size, func = properties
             _, name, args = element
             h, w = size
@@ -105,42 +123,42 @@ class Compiler():
             widgets.append(UI.widget_label(ln, Compiler.__find_arg_def(args, "label", name), x, y-PAD))
             widgets.append(func(name, x, y))
             x += w
+            
+        return UI.ui(widgets)
 
-    def __get_output_commands(self) -> List[Callable[[Callable[[str], float]], Callable[[], float]]]:
+    def __get_output_commands(self) -> List[Callable[[Callable[[str], float]], Callable[[], bytes]]]:
         commands = []
+        aux = set()
         for left, right in self.__links:
             if right.name in self.__out_devices.keys():
-                commands.append(lambda finder: Compiler.__op_to_func(left, finder))
+                if right.name not in aux:
+                    aux.add(right.name)
+                    match (dev := self.__out_devices[right.name]):
+                        case VASM.Device.DAC0 | VASM.Device.DAC1:
+                            commands.append(lambda finder, left=left, dev=dev: lambda: VASM.set_analog(dev, Compiler.__op_to_func(left, finder)()))
+                        case _ if VASM.is_digital(dev):
+                            commands.append(lambda finder, left=left, dev=dev: lambda: VASM.set_digital(dev, Compiler.__op_to_func(left, finder)()))
+                        case _:
+                            raise RuntimeError("Unreacheable")
+                else:
+                    raise MultipleSources(right.name)
+                
+        return commands
+        
 
-    def __get_config(self):
-        pass
-# let get_init_config (ast: Util.program_t) (dev_dict: VASM.devices_t): bytes Option.t = 
-#   let dev_dict = VASM.dev_dict ast in
-#   let rec traverse (elements: bytes list) = function
-#     | h::t -> (match h with
-#       | AST.Init (ty, name, args) -> (match VASM.dev_of_string_opt ty with
-#         | Some dev -> if VASM.is_input dev then traverse ((VASM.activate dev)::elements) t else traverse elements t
-#         | None -> traverse elements t)
-#       | AST.Link (AST.Const f, Either.Left s) -> (match Hashtbl.find_opt dev_dict s with
-#         | Some d -> 
-#           if not (VASM.is_input d) then 
-#             if VASM.is_digital d then 
-#               traverse ((VASM.set_digital d (f=0.0))::elements) t 
-#             else 
-#               traverse ((VASM.set_analog d f)::elements) t
-#           else traverse elements t
-#         | None -> traverse elements t)
-#       | _ -> traverse elements t)
-#     | [] -> elements in
-#   let byte_list = traverse [] ast in
-#     if (List.length byte_list) <> 0 then Some (List.fold_left Bytes.cat (List.hd byte_list) (List.tl byte_list)) else None;;
-
-# let () = let ast = get_AST (Sys.argv.(1))  |> Util.process_AST in
-#   let dict = VASM.dev_dict ast in
-#   let widgets = get_widgets ast dict in
-#   let devices = get_output_devices ast dict in
-#   let init = get_init_config ast dict in
-#   let init_file = open_out_bin Sys.argv.(2) in
-#     Printf.fprintf stdout "%s\n" (Ui.ui (List.rev_append widgets devices));
-#     if Option.is_some init then Option.get init |> output_bytes init_file;
-#     close_out init_file;;
+    def __get_config(self) -> bytes:
+        config = b""
+        for dev in self.__out_devices.values():
+            if VASM.is_digital(dev):
+                config += VASM.set_digital(dev, False)
+            else:
+                config += VASM.set_analog(dev, 0.0)
+        for dev in self.__in_devices.values():
+            config += VASM.activate(dev)
+            
+        return config
+                
+                
+if __name__ == "__main__":
+    with open("../test/test2.vdas") as f:
+        print(Compiler(f.read()).compile())

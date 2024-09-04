@@ -1,6 +1,16 @@
 BoolInput input1(label="LED pin 1")
 
+NumInput input2(label="DAC1")
+
 DO0 led1()
 
-input1 -> led1
-dawdawd
+DAC1 dac1()
+
+input1 * 2 -> led1
+input2 + 1 -> dac1
+
+NumDisplay out(label="ADC1")
+ADC1 adc()
+
+adc -> out
+

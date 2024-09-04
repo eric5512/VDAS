@@ -36,7 +36,7 @@ property_string = lambda name, obj: f"""<property name=\"{name}\" stdset=\"0\">
 </property>"""
 
 property_bool = lambda name, obj: f"""<property name=\"{name}\">
-<bool>{obj}</bool>
+<bool>{"true" if obj else "false"}</bool>
 </property>"""
 
 property_text_size = lambda size: f"""<property name=\"font\">
@@ -80,18 +80,18 @@ SIZE_LCD = (30, 90)
 SIZE_WINDOW = (600, 800)
 
 # (* Output widgets *)
-widget_label = lambda num, text, x, y: widget("QLabel", f"label_{num}", [property_geometry(SIZE_LABEL, x, y), property_text_size(10), property_text(text)])
+widget_label = lambda num, text, x, y: widget("QLabel", f"label_{num}", [property_geometry(*SIZE_LABEL, x, y), property_text_size(10), property_text(text)])
 
-widget_plot = lambda name, x, y: widget("PlotWidget", name, [property_geometry(SIZE_PLOT, x, y)])
+widget_plot = lambda name, x, y: widget("PlotWidget", name, [property_geometry(*SIZE_PLOT, x, y)])
 
-widget_numout = lambda name, x, y:widget ("QLineEdit", name, [property_geometry(SIZE_NUMOUT, x, y), property_text_size(12), property_bool("readOnly", True)])
+widget_numout = lambda name, x, y:widget ("QLineEdit", name, [property_geometry(*SIZE_NUMOUT, x, y), property_text_size(12), property_bool("readOnly", True)])
 
-widget_lcd = lambda name, x, y: widget("QLCDNumber", name, [property_geometry(SIZE_LCD, x, y)])
+widget_lcd = lambda name, x, y: widget("QLCDNumber", name, [property_geometry(*SIZE_LCD, x, y)])
 
 # (* Input widgets *)
-widget_numin = lambda name, x, y: widget("QDoubleSpinBox", name, [property_geometry(SIZE_NUMIN, x, y), property_text_size(12)])
+widget_numin = lambda name, x, y: widget("QDoubleSpinBox", name, [property_geometry(*SIZE_NUMIN, x, y), property_text_size(12)])
 
-widget_button = lambda name, x, y: widget("QPushButton", name, [property_geometry(SIZE_BUTTON, x, y), property_text_size(12), property_bool("checkable", True)])
+widget_button = lambda name, x, y: widget("QPushButton", name, [property_geometry(*SIZE_BUTTON, x, y), property_text_size(12), property_bool("checkable", True)])
 
 # (* Aux function to join the widgets*)
 def ui(widgets: List[str]):

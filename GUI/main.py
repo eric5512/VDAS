@@ -7,12 +7,14 @@ from PySide6.QtCore import Qt
 
 from windows.ui_window import Ui_MainWindow
 
-from loadProject import LoadWindow
-from newProject import NewWindow
-from connect import ConnectWindow
+from windows.loadProject import LoadWindow
+from windows.newProject import NewWindow
+from windows.connect import ConnectWindow
 
-from project import Project
-from program import createProgram
+from project.project import Project
+from program.program import createProgram
+from lang.compiler import Compiler
+
 
 def create_error_box(title, text):
     msg = QMessageBox()
@@ -65,21 +67,16 @@ class MainWindow(QMainWindow):
             connect = ConnectWindow()
             self.project.save(self.ui.program.toPlainText())
             
-            # if connect.exec():
-                # compiler = subprocess.Popen(["wsl", "../Lang/compiler", self.project.path.replace("\\", "/").replace("C:", "/mnt/c"), "./init"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                # compiler.wait()
-                # if compiler.returncode == 0:
-                #     compiler.stderr.read()
-                #     with open("program.ui", "w+t") as ui:
-                #         ui.truncate(0)
-                #         ui.write(compiler.stdout.read().decode())
-                #     self.program = createProgram()(connect.get_device().name)
-                #     self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
-                #     self.program.show()
-                #     self.setEnabled(False)
-                #     self.program.destroyed.connect(self.__on_program_closed)
-                # else:
-                #     create_error_box("Error during compilation", compiler.stderr.read().decode())
+            if connect.exec():
+                compiler = Compiler(self.ui.program.toPlainText())
+                ui, config, commands, sources = compiler.compile()
+                with open("program.ui", "+wt") as program_file:
+                    program_file.write(ui)
+                self.program = createProgram()(connect.get_device(), config, commands, sources)
+                self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
+                self.program.show()
+                self.setEnabled(False)
+                self.program.destroyed.connect(self.__on_program_closed)
         else:
             create_error_box("Error: empty project", "No selected project")
 

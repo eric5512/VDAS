@@ -4,7 +4,7 @@ Plot power(label="Power consumption")
 
 DAC0 source()
 
-CurrentADC0 current()
+CADC0 current()
 
 voltage -> source
 

@@ -1,6 +1,6 @@
 from serial import Serial
 
-from dataFSM import DataFSM
+from serial_interface.dataFSM import DataFSM
 
 class SerialInterface:
     __handler = Serial()
@@ -9,8 +9,8 @@ class SerialInterface:
 
     def connect(port):
         SerialInterface.__handler.port = port
-        SerialInterface.__handler.baudrate = 921600
-        # SerialInterface.__handler.baudrate = 256000
+        # SerialInterface.__handler.baudrate = 921600
+        SerialInterface.__handler.baudrate = 256000
         SerialInterface.__handler.open()
         return SerialInterface.__handler.is_open
     
