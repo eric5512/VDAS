@@ -84,7 +84,7 @@ widget_label = lambda num, text, x, y: widget("QLabel", f"label_{num}", [propert
 
 widget_plot = lambda name, x, y: widget("PlotWidget", name, [property_geometry(*SIZE_PLOT, x, y)])
 
-widget_numout = lambda name, x, y:widget ("QLineEdit", name, [property_geometry(*SIZE_NUMOUT, x, y), property_text_size(12), property_bool("readOnly", True)])
+widget_numout = lambda name, x, y: widget("QLineEdit", name, [property_geometry(*SIZE_NUMOUT, x, y), property_text_size(12), property_bool("readOnly", True)])
 
 widget_lcd = lambda name, x, y: widget("QLCDNumber", name, [property_geometry(*SIZE_LCD, x, y)])
 

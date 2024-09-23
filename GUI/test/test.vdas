@@ -1,11 +1,8 @@
-define voltage 5
+DO0 out()
 
-Plot power(label="Power consumption")
+DI0 in()
 
-DAC0 source()
+BoolDisplay disp()
 
-CADC0 current()
-
-voltage -> source
-
-current * voltage -> power
+in -> disp
+in -> out

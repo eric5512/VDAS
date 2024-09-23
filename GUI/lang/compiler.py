@@ -23,6 +23,10 @@ class ElementRedefinition(Exception):
 class MultipleSources(Exception):
     def __init__(self, name) -> None:
         super().__init__(f"The element {name} has multiple data sources")
+        
+class TypeError(Exception):
+    def __init__(self, ty, variable) -> None:
+        super().__init__(f"The element {variable} of type {ty} is incorrectly managed")
 
 class Compiler():
     __slots__ = ("__ast", "__widgets", "__in_devices", "__out_devices", "__links", "__vars")
@@ -60,6 +64,35 @@ class Compiler():
                         raise VariableReassignment(name)
                 case _:
                     raise RuntimeError("Unreacheable")
+                
+        self.__check()
+
+    def __check(self): # TODO: Add more checks            
+        def check_op(op: AST.Expr):
+            match op:
+                case AST.Op(_, l, r):
+                    check_op(l)
+                    check_op(r)
+                case AST.Comp(name, _):
+                    if name in self.__out_devices:
+                        raise TypeError(self.__out_devices[name].name, name)
+                    if name in self.__widgets:
+                        ty = self.__widgets[name][0][0]
+                        if ty not in ("QDoubleSpinBox", "QPushButton"):
+                            raise TypeError(ty, name)
+
+        for ins in self.__ast:
+            match ins:
+                case AST.Link(l, r):
+                    if r.name in self.__in_devices:
+                        raise TypeError(self.__in_devices[r.name].name, r.name)
+                    if r.name in self.__widgets:
+                        ty = self.__widgets[r.name][0][0]
+                        if ty in ("QDoubleSpinBox", "QPushButton"):
+                            raise TypeError(ty, r.name)
+                    check_op(l)
+                case _:
+                    pass
 
     def compile(self) -> Tuple[str, bytes, 
                            List[Callable[[Callable[[str], float]], Callable[[], bytes]]], 

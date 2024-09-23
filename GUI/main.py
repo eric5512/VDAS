@@ -64,19 +64,23 @@ class MainWindow(QMainWindow):
 
     def __click_actionCompile(self) -> None:
         if not self.project.is_empty():
-            connect = ConnectWindow()
-            self.project.save(self.ui.program.toPlainText())
-            
-            if connect.exec():
-                compiler = Compiler(self.ui.program.toPlainText())
-                ui, config, commands, sources = compiler.compile()
-                with open("program.ui", "+wt") as program_file:
-                    program_file.write(ui)
-                self.program = createProgram()(connect.get_device(), config, commands, sources)
-                self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
-                self.program.show()
-                self.setEnabled(False)
-                self.program.destroyed.connect(self.__on_program_closed)
+            try:
+                connect = ConnectWindow()
+                self.project.save(self.ui.program.toPlainText())
+                
+                if connect.exec():
+                    compiler = Compiler(self.ui.program.toPlainText())
+                    ui, config, commands, sources = compiler.compile()
+                    with open("program.ui", "+wt") as program_file:
+                        program_file.write(ui)
+                    self.program = createProgram()(connect.get_device(), config, commands, sources)
+                    self.program.setAttribute(Qt.WA_DeleteOnClose)  # Ensure the program window emits the destroyed signal
+                    self.program.show()
+                    self.setEnabled(False)
+                    self.program.destroyed.connect(self.__on_program_closed)
+            except Exception as e:
+                create_error_box("Error during compilation", str(e))
+                
         else:
             create_error_box("Error: empty project", "No selected project")
 
