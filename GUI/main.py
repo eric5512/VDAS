@@ -98,14 +98,12 @@ class MainWindow(QMainWindow):
 
     def __click_actionSave(self) -> None:
         if not self.project.is_empty():
-            self.project.save(self.ui.program.toPlainText())
-            ls = subprocess.Popen(["wsl", "../Lang/compiler", self.project.path.replace("\\", "/").replace("C:", "/mnt/c"), "./init"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-            ls.wait()
-            if ls.returncode == 0:
-                self.ui.output.setText("No errors found")
-                ls.stdout.read().decode()
-            else:
-                self.ui.output.setText(ls.stderr.read().decode())
+            try:
+                compiler = Compiler(self.ui.program.toPlainText())
+                compiler.compile()
+                self.ui.output.setText("")
+            except Exception as e:
+                self.ui.output.setText(str(e))
                 
         else:
             create_error_box("Error: empty project", "No selected project")

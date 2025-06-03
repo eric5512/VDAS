@@ -4,5 +4,5 @@ DI0 in()
 
 BoolDisplay disp()
 
-in -> disp
+in -> dis
 in -> out

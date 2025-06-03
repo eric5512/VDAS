@@ -52,3 +52,5 @@ GUI/windows/ui_*
 
 *.zip
 *.native
+/GUI/lib
+/GUI/bin
